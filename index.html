@@ -1,123 +1,20 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
 <title>Home - XR Multiplataforma</title>
 
 
-<!-- A-FRAME -->
+<!-- AFRAME -->
+
 <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.1/dist/aframe-master.min.js"></script>
-
-
-<style>
-
-body{
-    margin:0;
-    overflow:hidden;
-    font-family:Arial,sans-serif;
-}
-
-
-/* MENU */
-
-.nav-menu{
-
-    position:fixed;
-    top:16px;
-    right:16px;
-    z-index:20;
-
-    display:flex;
-    gap:10px;
-}
-
-
-.nav-menu a{
-
-    text-decoration:none;
-
-    background:rgba(0,0,0,0.8);
-
-    color:white;
-
-    padding:10px 14px;
-
-    border-radius:10px;
-
-    font-weight:bold;
-
-}
-
-
-/* TIEMPO DE CARGA */
-
-.load-badge{
-
-    position:fixed;
-
-    top:70px;
-    right:16px;
-
-    z-index:20;
-
-    background:white;
-
-    padding:10px 15px;
-
-    border-radius:10px;
-
-    font-weight:bold;
-
-}
-
-
-/* INFORMACION */
-
-.info-badge{
-
-    position:fixed;
-
-    bottom:20px;
-
-    left:20px;
-
-    z-index:20;
-
-    background:rgba(0,0,0,0.7);
-
-    color:white;
-
-    padding:12px;
-
-    border-radius:10px;
-
-}
-
-
-
-@media(max-width:768px){
-
-.nav-menu{
-
-    left:10px;
-    right:10px;
-
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-}
-
-}
-
-
-
-</style>
-
 
 
 <script>
@@ -125,22 +22,360 @@ body{
 const startTime = performance.now();
 
 
-window.addEventListener("load",()=>{
 
-let tiempo = performance.now()-startTime;
+/* ===============================
+        INICIAR AR
+================================ */
 
-document.getElementById("loadBadge").innerHTML=
 
-"Carga inicial: "+tiempo.toFixed(2)+" ms";
+async function entrarAR(){
+
+
+if(!navigator.xr){
+
+alert(
+"Este dispositivo no soporta WebXR"
+);
+
+return;
+
+}
+
+
+
+const disponible =
+await navigator.xr.isSessionSupported(
+"immersive-ar"
+);
+
+
+
+if(!disponible){
+
+alert(
+"AR no disponible en este navegador"
+);
+
+return;
+
+}
+
+
+
+try{
+
+
+await navigator.xr.requestSession(
+"immersive-ar",
+{
+
+requiredFeatures:[
+"local-floor"
+],
+
+optionalFeatures:[
+"hit-test",
+"bounded-floor"
+]
+
+});
+
+
+}
+
+catch(error){
+
+console.log(error);
+
+alert(
+"No se pudo iniciar AR"
+);
+
+}
+
+
+}
+
+
+
+
+
+/* ===============================
+        DISPONIBILIDAD XR
+================================ */
+
+
+window.addEventListener(
+"load",
+async()=>{
+
+
+let tiempo =
+performance.now()-startTime;
+
+
+
+document.getElementById(
+"loadBadge"
+).innerHTML =
+"Carga inicial: "
++
+tiempo.toFixed(2)
++
+" ms";
+
+
+
+if(navigator.xr){
+
+
+let vr =
+await navigator.xr.isSessionSupported(
+"immersive-vr"
+);
+
+
+let ar =
+await navigator.xr.isSessionSupported(
+"immersive-ar"
+);
+
+
+
+document.getElementById(
+"xrInfo"
+).innerHTML =
+
+"VR: "
++
+(vr?"Disponible":"No disponible")
++
+"<br>"
++
+"AR: "
++
+(ar?"Disponible":"No disponible");
+
+
+}
 
 
 });
 
 
+
+
+/* ===============================
+        FPS
+================================ */
+
+
+
+setInterval(()=>{
+
+
+let escena =
+document.querySelector(
+"a-scene"
+);
+
+
+
+if(
+escena &&
+escena.renderer
+){
+
+
+let fps =
+Math.round(
+1/
+escena.frameDuration
+);
+
+
+
+document.getElementById(
+"fps"
+).innerHTML =
+"FPS: "
++
+fps;
+
+
+}
+
+
+
+},1000);
+
+
+
 </script>
 
 
+
+<style>
+
+
+body{
+
+margin:0;
+
+overflow:hidden;
+
+font-family:Arial;
+
+}
+
+
+
+/* MENU */
+
+.nav-menu{
+
+
+position:fixed;
+
+top:15px;
+
+right:15px;
+
+z-index:20;
+
+display:flex;
+
+gap:10px;
+
+flex-wrap:wrap;
+
+
+}
+
+
+
+.nav-menu a,
+.nav-menu button{
+
+
+background:
+rgba(0,0,0,.75);
+
+color:white;
+
+padding:10px 14px;
+
+border-radius:10px;
+
+border:none;
+
+cursor:pointer;
+
+font-weight:bold;
+
+text-decoration:none;
+
+
+}
+
+
+
+
+.nav-menu button:hover,
+.nav-menu a:hover{
+
+background:black;
+
+}
+
+
+
+/* PANEL CARGA */
+
+
+.load-badge{
+
+
+position:fixed;
+
+top:70px;
+
+right:15px;
+
+background:white;
+
+padding:10px;
+
+border-radius:10px;
+
+z-index:20;
+
+font-weight:bold;
+
+
+}
+
+
+
+/* INFORMACION */
+
+
+.info{
+
+
+position:fixed;
+
+bottom:20px;
+
+left:20px;
+
+background:
+rgba(0,0,0,.75);
+
+color:white;
+
+padding:15px;
+
+border-radius:10px;
+
+z-index:20;
+
+
+}
+
+
+
+
+/* CELULAR */
+
+
+@media(max-width:768px){
+
+
+.nav-menu{
+
+left:10px;
+
+right:10px;
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+}
+
+
+
+}
+
+
+
+
+</style>
+
+
 </head>
+
 
 
 
@@ -148,7 +383,6 @@ document.getElementById("loadBadge").innerHTML=
 
 
 
-<!-- MENU -->
 
 <div class="nav-menu">
 
@@ -164,16 +398,27 @@ Escena básica
 
 
 <a href="banda.html">
-Banda transportadora
+Banda
 </a>
 
 
 <a href="robot.html">
-Robot CAD
+Robot
 </a>
 
 
+
+<button onclick="entrarAR()">
+
+ENTRAR AR
+
+</button>
+
+
+
 </div>
+
+
 
 
 
@@ -185,10 +430,19 @@ Cargando...
 
 
 
-<div class="info-badge">
 
-Portada laboratorio XR.
-Compatible con navegación WebXR.
+<div id="xrInfo" class="info">
+
+Comprobando XR...
+
+<br>
+
+<span id="fps">
+
+FPS:
+
+</span>
+
 
 </div>
 
@@ -198,30 +452,43 @@ Compatible con navegación WebXR.
 
 <a-scene
 
-    renderer="
-    alpha:true;
-    antialias:true;
-    colorManagement:true;
-    physicallyCorrectLights:true;
-    "
 
-    vr-mode-ui="enabled:true"
+renderer="
+
+alpha:true;
+
+antialias:true;
+
+colorManagement:true
+
+"
 
 
-    webxr="
-    optionalFeatures:
-    local-floor,
-    bounded-floor,
-    hit-test,
-    hand-tracking;
-    ">
+vr-mode-ui="enabled:true"
 
+
+
+webxr="
+
+optionalFeatures:
+
+local-floor,
+
+hit-test,
+
+bounded-floor
+
+"
+
+>
 
 
 <!-- CAMARA -->
 
+
 <a-entity
 position="0 1.6 6">
+
 
 <a-camera>
 
@@ -234,7 +501,8 @@ position="0 1.6 6">
 
 
 
-<!-- ILUMINACION -->
+<!-- LUCES -->
+
 
 <a-light
 
@@ -250,9 +518,9 @@ color="#BBB">
 
 type="directional"
 
-intensity="1"
+position="1 4 2"
 
-position="1 4 2">
+intensity="1.2">
 
 </a-light>
 
@@ -262,7 +530,10 @@ position="1 4 2">
 
 <!-- PISO -->
 
+
 <a-plane
+
+position="0 0 0"
 
 rotation="-90 0 0"
 
@@ -278,8 +549,8 @@ color="#D8F3DC">
 
 
 
-
 <!-- PANEL -->
+
 
 <a-box
 
@@ -289,7 +560,7 @@ width="7"
 
 height="2.5"
 
-depth="0.2"
+depth="0.25"
 
 color="#1D3557">
 
@@ -299,44 +570,30 @@ color="#1D3557">
 
 
 
-<!-- TEXTOS -->
-
 <a-text
 
 value="XR MULTIPLATAFORMA"
 
-position="-2.8 2.5 -3.85"
+position="-2.8 2.5 -3.8"
 
-color="white"
+width="8"
 
-width="7">
+color="white">
 
 </a-text>
+
 
 
 
 <a-text
 
-value="Laboratorio de Realidad Virtual"
+value="Laboratorio Realidad Virtual"
 
-position="-2.6 2 -3.85"
+position="-2.6 2 -3.8"
 
-color="#A8DADC"
+width="6"
 
-width="6">
-
-</a-text>
-
-
-<a-text
-
-value="Selecciona una escena"
-
-position="-2.3 1.5 -3.85"
-
-color="white"
-
-width="5">
+color="#A8DADC">
 
 </a-text>
 
@@ -344,24 +601,24 @@ width="5">
 
 
 
+<!-- OBJETOS DECORATIVOS -->
 
-
-<!-- OBJETOS -->
 
 <a-box
 
 position="-4 1 -5"
 
-width="1.2"
+rotation="0 25 0"
 
-height="1.2"
+width="1"
 
-depth="1.2"
+height="1"
+
+depth="1"
 
 color="#4CC9F0">
 
 </a-box>
-
 
 
 
@@ -379,9 +636,10 @@ color="#FFD166">
 
 
 
+
 <a-sphere
 
-position="4 1 -5"
+position="4 1.2 -5"
 
 radius="0.9"
 
@@ -393,7 +651,8 @@ color="#EF476F">
 
 
 
-<!-- FONDO TRANSPARENTE PARA MR -->
+
+<!-- IMPORTANTE PARA AR -->
 
 <a-sky
 
@@ -408,6 +667,8 @@ color="transparent">
 
 
 
+
 </body>
+
 
 </html>
