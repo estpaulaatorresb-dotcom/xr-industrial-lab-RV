@@ -1,23 +1,17 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 
 <head>
 
-
 <meta charset="UTF-8">
-
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-<title>Robot CAD XR</title>
-
+<title>Robot CAD XR - AR</title>
 
 
 <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.1/dist/aframe-master.min.js"></script>
-
 
 
 <style>
@@ -35,13 +29,9 @@ overflow:hidden;
 
 
 
-
-
 /* MENU */
 
-
 .nav-menu{
-
 
 position:fixed;
 
@@ -55,78 +45,54 @@ display:flex;
 
 gap:10px;
 
-
 }
-
-
 
 
 .nav-menu a{
 
-
 background:#222;
-
 
 color:white;
 
-
 padding:12px 18px;
-
 
 border-radius:10px;
 
-
 text-decoration:none;
-
 
 font-weight:bold;
 
-
 }
-
 
 
 .nav-menu a:hover{
 
-
 background:#444;
-
 
 }
 
 
 
-
-
-/* BOTONES XR */
-
+/* BOTONES */
 
 .xr-buttons{
 
 
 position:fixed;
 
-
 bottom:20px;
-
 
 left:50%;
 
-
 transform:translateX(-50%);
-
 
 z-index:30;
 
-
 display:flex;
-
 
 gap:15px;
 
-
 }
-
 
 
 
@@ -135,41 +101,28 @@ gap:15px;
 
 padding:15px 25px;
 
-
 border:none;
-
 
 border-radius:12px;
 
-
 background:#1d3557;
-
 
 color:white;
 
-
 font-size:16px;
-
 
 font-weight:bold;
 
-
 cursor:pointer;
 
-
 }
-
-
 
 
 .xr-buttons button:hover{
 
-
 background:#457b9d;
 
-
 }
-
 
 
 
@@ -179,108 +132,71 @@ background:#457b9d;
 
 position:fixed;
 
-
 bottom:20px;
-
 
 left:20px;
 
-
 background:rgba(0,0,0,0.75);
-
 
 color:white;
 
-
 padding:15px;
-
 
 border-radius:10px;
 
-
 z-index:20;
 
-
 max-width:350px;
-
 
 }
 
 
-
 </style>
-
 
 
 </head>
 
 
 
-
-
-
 <body>
-
-
-
 
 
 <!-- MENU -->
 
-
 <div class="nav-menu">
 
-
 <a href="index.html">
-
 Home
-
 </a>
-
 
 
 <a href="escena.html">
-
 Escena básica
-
 </a>
-
 
 
 <a href="banda.html">
-
 Banda transportadora
-
 </a>
-
 
 
 <a href="robot.html">
-
 Robot CAD
-
 </a>
-
 
 
 </div>
 
 
 
-
-
-
-
-
 <!-- BOTONES XR -->
-
 
 <div class="xr-buttons">
 
 
 <button onclick="entrarVR()">
 
-🥽 Entrar VR
+🥽 VR
 
 </button>
 
@@ -288,44 +204,29 @@ Robot CAD
 
 <button onclick="entrarAR()">
 
-📷 Entrar AR
+📷 AR
 
 </button>
 
 
-
 </div>
-
-
-
-
 
 
 
 
 <div class="info">
 
-
-Robot CAD industrial XR
-
+<b>Robot CAD Industrial XR</b>
 
 <br><br>
 
+Modelo GLB integrado con WebXR.
 
-Modelo 3D importado en formato GLB.
+<br><br>
 
-
-<br>
-
-
-Compatible con Meta Quest mediante WebXR.
-
+Modo VR y Mixed Reality para Meta Quest.
 
 </div>
-
-
-
-
 
 
 
@@ -333,77 +234,49 @@ Compatible con Meta Quest mediante WebXR.
 
 <a-scene
 
-
 id="scene"
 
-
-stats
-
+renderer="alpha:true"
 
 vr-mode-ui="enabled:true"
 
-
-webxr="optionalFeatures: local-floor, hit-test;"
-
+webxr="optionalFeatures: hit-test, local-floor"
 
 embedded>
 
 
 
-
-
-
-
-
-
 <!-- CAMARA -->
-
 
 <a-camera
 
-
-position="0 2 8">
-
+position="0 1.6 0">
 
 </a-camera>
 
 
 
 
-
-
-
-<!-- ILUMINACION -->
+<!-- LUCES -->
 
 
 <a-light
-
 
 type="ambient"
 
-
-color="#BBBBBB">
-
+intensity="1">
 
 </a-light>
-
 
 
 
 <a-light
 
-
 type="directional"
 
+position="2 4 2"
 
-color="#FFFFFF"
-
-
-intensity="1.5"
-
-
-position="3 5 3">
-
+intensity="1.5">
 
 </a-light>
 
@@ -411,52 +284,18 @@ position="3 5 3">
 
 
 
-
-
-
-
-<!-- PISO INDUSTRIAL -->
-
-
-<a-plane
-
-
-rotation="-90 0 0"
-
-
-width="30"
-
-
-height="30"
-
-
-color="#CCCCCC">
-
-
-</a-plane>
-
-
-
-
-
-
-
-
-
-<!-- MODELO ROBOT CAD -->
+<!-- MODELO ROBOT -->
 
 
 <a-entity
 
+id="robot"
 
 gltf-model="models/robotassembly.glb"
 
-
-position="0 0 -4"
-
+position="0 0 -2"
 
 rotation="0 180 0"
-
 
 scale="0.8 0.8 0.8">
 
@@ -467,26 +306,41 @@ scale="0.8 0.8 0.8">
 
 
 
+<!-- MARCADOR VISUAL -->
+
+<a-ring
+
+id="marker"
+
+rotation="-90 0 0"
+
+radius-inner="0.25"
+
+radius-outer="0.35"
+
+color="#00FF00"
+
+visible="false">
+
+
+</a-ring>
 
 
 
 
-<!-- TITULO -->
+
+<!-- TEXTO -->
 
 
 <a-text
 
-
 value="ROBOT CAD INDUSTRIAL"
 
+position="-2 2 -3"
 
-position="-2.5 3 -4"
+color="white"
 
-
-color="black"
-
-
-width="6">
+width="5">
 
 
 </a-text>
@@ -494,78 +348,7 @@ width="6">
 
 
 
-
-
-
-
-
-<!-- REFERENCIA VISUAL -->
-
-
-<a-box
-
-
-position="-4 0.5 -5"
-
-
-width="1"
-
-
-height="1"
-
-
-depth="1"
-
-
-color="#4CC9F0">
-
-
-</a-box>
-
-
-
-
-
-<a-cylinder
-
-
-position="4 0.8 -5"
-
-
-radius="0.5"
-
-
-height="1.5"
-
-
-color="#FFD166">
-
-
-</a-cylinder>
-
-
-
-
-
-
-
-
-<a-sky color="#ECECEC">
-
-
-</a-sky>
-
-
-
-
-
-
-
-
-
 </a-scene>
-
-
 
 
 
@@ -579,9 +362,18 @@ color="#FFD166">
 let scene=document.querySelector("#scene");
 
 
+let robot=document.querySelector("#robot");
 
 
+let marker=document.querySelector("#marker");
+
+
+
+
+
+// =====================
 // ENTRAR VR
+// =====================
 
 
 function entrarVR(){
@@ -596,13 +388,12 @@ scene.enterVR();
 
 
 
-
-
+// =====================
 // ENTRAR AR
+// =====================
 
 
 async function entrarAR(){
-
 
 
 try{
@@ -616,7 +407,9 @@ let session = await navigator.xr.requestSession(
 
 requiredFeatures:[
 
-"hit-test"
+"hit-test",
+
+"local-floor"
 
 ]
 
@@ -630,15 +423,21 @@ scene.renderer.xr.setSession(session);
 
 
 
+console.log("AR iniciado");
+
+
 }
 
 
 catch(error){
 
 
+console.log(error);
+
+
 alert(
 
-"AR no disponible en este navegador"
+"No se pudo iniciar AR. Verifique compatibilidad WebXR."
 
 );
 
@@ -651,13 +450,38 @@ alert(
 
 
 
+
+
+// =====================
+// COLOCACION AR
+// =====================
+
+
+scene.addEventListener(
+
+"enter-vr",
+
+()=>{
+
+
+console.log(
+
+"Modo XR activo"
+
+);
+
+
+}
+
+);
+
+
+
+
 </script>
 
 
 
-
-
 </body>
-
 
 </html>
