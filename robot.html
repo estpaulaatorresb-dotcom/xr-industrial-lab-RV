@@ -7,11 +7,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-<title>Robot CAD XR - AR</title>
+<title>Robot CAD XR</title>
 
 
 <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.1/dist/aframe-master.min.js"></script>
+
 
 
 <style>
@@ -50,6 +50,7 @@ gap:10px;
 
 .nav-menu a{
 
+
 background:#222;
 
 color:white;
@@ -65,6 +66,7 @@ font-weight:bold;
 }
 
 
+
 .nav-menu a:hover{
 
 background:#444;
@@ -73,7 +75,7 @@ background:#444;
 
 
 
-/* BOTONES */
+/* BOTONES XR */
 
 .xr-buttons{
 
@@ -118,11 +120,13 @@ cursor:pointer;
 }
 
 
+
 .xr-buttons button:hover{
 
 background:#457b9d;
 
 }
+
 
 
 
@@ -161,9 +165,11 @@ max-width:350px;
 <body>
 
 
+
 <!-- MENU -->
 
 <div class="nav-menu">
+
 
 <a href="index.html">
 Home
@@ -189,7 +195,10 @@ Robot CAD
 
 
 
-<!-- BOTONES XR -->
+
+
+<!-- BOTONES -->
+
 
 <div class="xr-buttons">
 
@@ -199,7 +208,6 @@ Robot CAD
 🥽 VR
 
 </button>
-
 
 
 <button onclick="entrarAR()">
@@ -214,17 +222,18 @@ Robot CAD
 
 
 
+
 <div class="info">
 
 <b>Robot CAD Industrial XR</b>
 
 <br><br>
 
-Modelo GLB integrado con WebXR.
+Modelo CAD en formato GLB.
 
 <br><br>
 
-Modo VR y Mixed Reality para Meta Quest.
+Compatible con Meta Quest VR / Mixed Reality.
 
 </div>
 
@@ -232,21 +241,32 @@ Modo VR y Mixed Reality para Meta Quest.
 
 
 
+
+
 <a-scene
+
 
 id="scene"
 
-renderer="alpha:true"
+
+renderer="alpha:true; physicallyCorrectLights:true;"
+
 
 vr-mode-ui="enabled:true"
 
+
 webxr="optionalFeatures: hit-test, local-floor"
+
 
 embedded>
 
 
 
+
+
+
 <!-- CAMARA -->
+
 
 <a-camera
 
@@ -257,26 +277,43 @@ position="0 1.6 0">
 
 
 
-<!-- LUCES -->
+
+
+<!-- ILUMINACION -->
 
 
 <a-light
+
 
 type="ambient"
 
-intensity="1">
+
+color="#FFFFFF"
+
+
+intensity="3">
+
 
 </a-light>
+
+
 
 
 
 <a-light
 
+
 type="directional"
+
+
+color="#FFFFFF"
+
 
 position="2 4 2"
 
-intensity="1.5">
+
+intensity="2">
+
 
 </a-light>
 
@@ -284,20 +321,27 @@ intensity="1.5">
 
 
 
-<!-- MODELO ROBOT -->
+
+
+<!-- ROBOT CAD -->
 
 
 <a-entity
 
+
 id="robot"
+
 
 gltf-model="models/robotassembly.glb"
 
-position="0 0 -2"
+
+position="0 1 -1"
+
 
 rotation="0 180 0"
 
-scale="0.8 0.8 0.8">
+
+scale="2 2 2">
 
 
 </a-entity>
@@ -306,44 +350,29 @@ scale="0.8 0.8 0.8">
 
 
 
-<!-- MARCADOR VISUAL -->
 
-<a-ring
-
-id="marker"
-
-rotation="-90 0 0"
-
-radius-inner="0.25"
-
-radius-outer="0.35"
-
-color="#00FF00"
-
-visible="false">
-
-
-</a-ring>
-
-
-
-
-
-<!-- TEXTO -->
+<!-- TEXTO 3D -->
 
 
 <a-text
 
+
 value="ROBOT CAD INDUSTRIAL"
 
-position="-2 2 -3"
+
+position="-2 2.5 -3"
+
 
 color="white"
+
 
 width="5">
 
 
 </a-text>
+
+
+
 
 
 
@@ -359,21 +388,16 @@ width="5">
 <script>
 
 
-let scene=document.querySelector("#scene");
 
-
-let robot=document.querySelector("#robot");
-
-
-let marker=document.querySelector("#marker");
+let scene = document.querySelector("#scene");
 
 
 
 
 
-// =====================
-// ENTRAR VR
-// =====================
+// ======================
+// VR
+// ======================
 
 
 function entrarVR(){
@@ -388,9 +412,11 @@ scene.enterVR();
 
 
 
-// =====================
-// ENTRAR AR
-// =====================
+
+
+// ======================
+// AR / MIXED REALITY
+// ======================
 
 
 async function entrarAR(){
@@ -405,13 +431,15 @@ let session = await navigator.xr.requestSession(
 
 {
 
+
 requiredFeatures:[
 
-"hit-test",
+"local-floor",
 
-"local-floor"
+"hit-test"
 
 ]
+
 
 }
 
@@ -423,7 +451,12 @@ scene.renderer.xr.setSession(session);
 
 
 
-console.log("AR iniciado");
+console.log(
+
+"Modo AR iniciado"
+
+);
+
 
 
 }
@@ -432,29 +465,25 @@ console.log("AR iniciado");
 catch(error){
 
 
-console.log(error);
+console.error(error);
+
 
 
 alert(
 
-"No se pudo iniciar AR. Verifique compatibilidad WebXR."
+"El dispositivo no soporta WebXR AR"
 
 );
 
 
-}
-
-
 
 }
 
 
+}
 
 
 
-// =====================
-// COLOCACION AR
-// =====================
 
 
 scene.addEventListener(
@@ -466,7 +495,7 @@ scene.addEventListener(
 
 console.log(
 
-"Modo XR activo"
+"XR activo"
 
 );
 
@@ -477,11 +506,13 @@ console.log(
 
 
 
-
 </script>
 
 
 
+
+
 </body>
+
 
 </html>
