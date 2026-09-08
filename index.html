@@ -4,176 +4,223 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Home - XR Multiplataforma</title>
+<title>XR Multiplataforma - Home</title>
 
 
 <script>
+
 const startTime = performance.now();
+
 </script>
 
 
-<script src="https://cdn.jsdelivr.net/npm/aframe@1.4.1/dist/aframe-master.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aframe@1.6.0/dist/aframe-master.min.js"></script>
+
 
 
 <style>
 
-body {
 
-    margin:0;
-    overflow:hidden;
-    font-family:Arial,sans-serif;
+body{
 
-}
+margin:0;
 
+overflow:hidden;
 
-/* MENU */
-
-.nav-menu {
-
-    position:fixed;
-    top:16px;
-    right:16px;
-    z-index:20;
-
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-
-}
-
-
-.nav-menu a {
-
-    text-decoration:none;
-
-    background:rgba(0,0,0,0.78);
-
-    color:white;
-
-    padding:10px 14px;
-
-    border-radius:10px;
-
-    font-size:14px;
-
-    font-weight:600;
-
-}
-
-
-.nav-menu a:hover {
-
-    background:rgba(0,0,0,0.92);
+font-family:Arial,sans-serif;
 
 }
 
 
 
-/* TIEMPO DE CARGA */
 
-.load-badge {
-
-    position:fixed;
-
-    top:68px;
-
-    right:16px;
-
-    z-index:20;
-
-    background:rgba(255,255,255,0.88);
-
-    color:#111;
-
-    padding:10px 14px;
-
-    border-radius:10px;
-
-    font-size:14px;
-
-    font-weight:700;
-
-}
+.nav-menu{
 
 
+position:fixed;
 
-/* INFORMACION */
+top:16px;
 
-.info-badge {
+right:16px;
 
-
-    position:fixed;
-
-    bottom:16px;
-
-    left:16px;
-
-    z-index:20;
+z-index:20;
 
 
-    background:rgba(0,0,0,0.72);
+display:flex;
 
-    color:white;
+flex-wrap:wrap;
 
-
-    padding:10px 14px;
-
-
-    border-radius:10px;
-
-
-    font-size:13px;
-
-
-    max-width:380px;
+gap:10px;
 
 
 }
 
 
 
-/* CELULAR */
+.nav-menu a,
+.nav-menu button{
+
+
+text-decoration:none;
+
+background:rgba(0,0,0,0.78);
+
+color:white;
+
+
+padding:10px 14px;
+
+border-radius:10px;
+
+
+font-size:14px;
+
+font-weight:600;
+
+
+border:none;
+
+cursor:pointer;
+
+
+}
+
+
+
+.nav-menu a:hover,
+.nav-menu button:hover{
+
+
+background:rgba(0,0,0,0.95);
+
+
+}
+
+
+
+
+.load-badge{
+
+
+position:fixed;
+
+top:68px;
+
+right:16px;
+
+
+z-index:20;
+
+
+background:white;
+
+color:#111;
+
+
+padding:10px 14px;
+
+
+border-radius:10px;
+
+
+font-weight:bold;
+
+
+}
+
+
+
+
+
+.info-badge{
+
+
+position:fixed;
+
+bottom:16px;
+
+left:16px;
+
+
+z-index:20;
+
+
+background:rgba(0,0,0,0.72);
+
+
+color:white;
+
+
+padding:10px 14px;
+
+
+border-radius:10px;
+
+
+max-width:380px;
+
+
+font-size:13px;
+
+
+}
+
+
 
 @media(max-width:768px){
 
 
 .nav-menu{
 
-    top:12px;
 
-    left:12px;
+left:12px;
 
-    right:12px;
+right:12px;
 
-    display:grid;
+top:12px;
 
-    grid-template-columns:1fr 1fr;
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+
+}
+
+
+
+.nav-menu a,
+.nav-menu button{
+
+
+font-size:12px;
+
+text-align:center;
+
 
 }
 
-
-.nav-menu a{
-
-    text-align:center;
-
-    font-size:12px;
-
-}
 
 
 .info-badge{
 
-    left:12px;
 
-    right:12px;
+left:12px;
 
-    bottom:90px;
+right:12px;
 
-    max-width:none;
+
+bottom:90px;
+
+
+max-width:none;
+
 
 }
+
 
 
 }
@@ -190,34 +237,33 @@ body {
 window.addEventListener('load',()=>{
 
 
-const loadTime = performance.now()-startTime;
+let tiempo =
+performance.now()-startTime;
 
 
-const badge=document.getElementById("loadBadge");
+document.getElementById("loadBadge").innerHTML =
 
+"Carga inicial: "
 
-if(badge){
++ tiempo.toFixed(2)
 
-badge.textContent="Carga inicial: "+loadTime.toFixed(2)+" ms";
-
-}
++ " ms";
 
 
 });
 
 
-</script>
 
+</script>
 
 
 </head>
 
 
+
 <body>
 
 
-
-<!-- MENU -->
 
 <div class="nav-menu">
 
@@ -242,8 +288,13 @@ Robot CAD
 </a>
 
 
-</div>
+<button id="arButton">
+AR Meta Quest
+</button>
 
+
+
+</div>
 
 
 
@@ -255,58 +306,41 @@ Cargando...
 
 
 
-
 <div class="info-badge">
 
-Portada del laboratorio XR. Usa el menú superior para navegar entre las escenas.
+Portada del laboratorio XR.
+Usa el menú para navegar entre las experiencias.
 
 </div>
 
 
 
-
-
-<!-- ESCENA WEBXR -->
-
 <a-scene
 
-stats
+xr-mode="immersive-ar"
+
+webxr="requiredFeatures: local-floor; optionalFeatures: hit-test, dom-overlay;"
 
 vr-mode-ui="enabled:true"
 
-webxr="optionalFeatures: local-floor, hit-test;"
+renderer="colorManagement:true"
+
+stats
 
 >
-
-
-<!-- SISTEMA DE POSICIONAMIENTO -->
+    <!-- CAMARA -->
 
 <a-entity
+position="0 1.6 6">
 
-id="rig"
-
-position="0 0 0">
+<a-camera></a-camera>
 
 </a-entity>
 
 
 
 
-
-<!-- CAMARA -->
-
-<a-camera
-
-position="0 1.6 0">
-
-</a-camera>
-
-
-
-
-
-<!-- ILUMINACION -->
-
+<!-- LUZ -->
 
 <a-light
 
@@ -334,13 +368,11 @@ position="1 4 2">
 
 
 
-
-<!-- PISO VIRTUAL -->
-
+<!-- SUPERFICIE PARA REALIDAD AUMENTADA -->
 
 <a-plane
 
-position="0 0 0"
+id="surface"
 
 rotation="-90 0 0"
 
@@ -356,57 +388,66 @@ color="#D8F3DC">
 
 
 
-
-
 <!-- PANEL PRINCIPAL -->
 
 
 <a-box
 
-position="0 2 -2"
+
+position="0 2 -4"
+
 
 width="7"
 
+
 height="2.6"
+
 
 depth="0.25"
 
+
 color="#1D3557">
+
 
 </a-box>
 
 
 
 
-
-
-<!-- TEXTO -->
-
-
 <a-text
+
 
 value="XR MULTIPLATAFORMA"
 
-position="-2.85 2.55 -1.86"
 
-color="#FFFFFF"
+position="-2.85 2.55 -3.86"
+
+
+color="white"
+
 
 width="8">
 
+
 </a-text>
 
 
 
 
 <a-text
+
 
 value="Laboratorio de Realidad Virtual"
 
-position="-2.6 1.95 -1.86"
+
+position="-2.6 1.95 -3.86"
+
 
 color="#A8DADC"
 
+
 width="6">
+
 
 </a-text>
 
@@ -415,13 +456,18 @@ width="6">
 
 <a-text
 
-value="Selecciona una escena desde el menu superior"
 
-position="-2.55 1.35 -1.86"
+value="Meta Quest WebXR - VR / AR"
 
-color="#F1FAEE"
 
-width="5.6">
+position="-2.5 1.35 -3.86"
+
+
+color="white"
+
+
+width="5.5">
+
 
 </a-text>
 
@@ -430,49 +476,68 @@ width="5.6">
 
 
 
-<!-- OBJETOS DECORATIVOS -->
-
+<!-- OBJETOS 3D -->
 
 <a-box
 
-position="-4 1 -3"
+
+position="-4 1 -5"
+
 
 rotation="0 25 0"
 
+
 width="1.2"
+
 
 height="1.2"
 
+
 depth="1.2"
+
 
 color="#4CC9F0">
 
+
 </a-box>
+
+
 
 
 
 <a-cylinder
 
-position="0 1 -4"
+
+position="0 1 -6"
+
 
 radius="0.6"
 
+
 height="1.6"
 
+
 color="#FFD166">
+
 
 </a-cylinder>
 
 
 
 
+
+
 <a-sphere
 
-position="4 1.2 -3"
+
+position="4 1.2 -5"
+
 
 radius="0.9"
 
+
 color="#EF476F">
+
 
 </a-sphere>
 
@@ -480,10 +545,29 @@ color="#EF476F">
 
 
 
+<!-- MODELO ROBOT -->
 
-<!-- FONDO TRANSPARENTE PARA MR -->
+<a-entity
 
-<a-sky visible="false">
+
+gltf-model="models/robotassembly.glb"
+
+
+position="0 0 -8"
+
+
+scale="0.5 0.5 0.5">
+
+
+</a-entity>
+
+
+
+
+
+<a-sky
+
+color="#ECECEC">
 
 </a-sky>
 
@@ -491,6 +575,46 @@ color="#EF476F">
 
 
 </a-scene>
+
+
+
+
+<script>
+
+
+// BOTON PARA META QUEST
+
+document
+.getElementById("arButton")
+.addEventListener("click",()=>{
+
+
+let scene =
+document.querySelector("a-scene");
+
+
+if(scene.is("ar-mode")){
+
+
+scene.exitAR();
+
+
+}
+
+else{
+
+
+scene.enterAR();
+
+
+}
+
+
+});
+
+
+
+</script>
 
 
 
