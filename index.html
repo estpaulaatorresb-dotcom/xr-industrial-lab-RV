@@ -1,118 +1,44 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Home - XR Multiplataforma</title>
+
+<title>XR Multiplataforma</title>
 
 
-<!-- A-FRAME -->
+
+<!-- AFRAME -->
+
 <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.1/dist/aframe-master.min.js"></script>
+
 
 
 <script>
 
-const inicio = performance.now();
+
+const tiempoInicio = performance.now();
 
 
 
-/* ===========================
-   BOTON AR
-=========================== */
-
-
-async function entrarAR(){
-
-    if(!navigator.xr){
-
-        alert("Este navegador no soporta WebXR");
-        return;
-
-    }
-
-
-    const disponible =
-    await navigator.xr.isSessionSupported(
-        "immersive-ar"
-    );
-
-
-    if(!disponible){
-
-        alert(
-        "AR no disponible en este dispositivo"
-        );
-
-        return;
-
-    }
-
-
-    try{
-
-
-        const session =
-        await navigator.xr.requestSession(
-            "immersive-ar",
-            {
-
-            requiredFeatures:[
-                "local-floor"
-            ],
-
-            optionalFeatures:[
-                "hit-test",
-                "bounded-floor"
-            ]
-
-            }
-        );
-
-
-        console.log(
-        "Sesión AR iniciada",
-        session
-        );
-
-
-    }
-
-    catch(error){
-
-        console.log(error);
-
-        alert(
-        "Error iniciando AR"
-        );
-
-    }
-
-}
-
-
-
-
-/* ===========================
-   INFORMACION XR
-=========================== */
 
 
 window.addEventListener(
 "load",
-
-async()=>{
+()=>{
 
 
 let tiempo =
-performance.now()-inicio;
-
+performance.now()-tiempoInicio;
 
 
 document.getElementById(
-"carga"
+"latencia"
 ).innerHTML =
 
 "Carga inicial: "
@@ -122,87 +48,28 @@ tiempo.toFixed(2)
 " ms";
 
 
-
-if(navigator.xr){
-
-
-let vr =
-await navigator.xr.isSessionSupported(
-"immersive-vr"
-);
-
-
-
-let ar =
-await navigator.xr.isSessionSupported(
-"immersive-ar"
-);
-
-
-
-document.getElementById(
-"estadoXR"
-).innerHTML =
-
-"VR: "
-+
-(vr?"Disponible":"No disponible")
-+
-"<br>"
-+
-"AR: "
-+
-(ar?"Disponible":"No disponible");
-
-
-
-}
-
-else{
-
-
-document.getElementById(
-"estadoXR"
-).innerHTML =
-
-"WebXR no disponible";
-
-
-}
-
-
 });
 
 
 
 
 
-/* ===========================
- FPS
-=========================== */
-
+// FPS
 
 setInterval(()=>{
 
 
 let escena =
-document.querySelector(
-"a-scene"
-);
+document.querySelector("a-scene");
 
 
-
-if(
-escena &&
-escena.renderer
-){
+if(escena){
 
 
 document.getElementById(
 "fps"
 ).innerHTML =
-
-"FPS activos";
+"Escena activa";
 
 
 }
@@ -213,6 +80,7 @@ document.getElementById(
 
 
 </script>
+
 
 
 
@@ -232,6 +100,8 @@ font-family:Arial;
 
 
 
+
+
 /* MENU */
 
 .menu{
@@ -243,7 +113,8 @@ top:15px;
 
 right:15px;
 
-z-index:30;
+z-index:10;
+
 
 display:flex;
 
@@ -272,39 +143,39 @@ border-radius:10px;
 
 font-weight:bold;
 
-text-decoration:none;
-
 cursor:pointer;
 
-
-}
-
-
-
-.menu button:hover,
-.menu a:hover{
-
-
-background:#444;
+text-decoration:none;
 
 
 }
 
 
 
+.menu a:hover,
+.menu button:hover{
 
 
-/* CARGA */
+background:#555;
 
 
-#carga{
+}
+
+
+
+
+
+/* LATENCIA */
+
+
+#latencia{
 
 
 position:fixed;
 
-top:80px;
+right:20px;
 
-right:15px;
+top:80px;
 
 background:white;
 
@@ -312,7 +183,7 @@ padding:12px;
 
 border-radius:10px;
 
-z-index:30;
+z-index:10;
 
 font-weight:bold;
 
@@ -323,7 +194,7 @@ font-weight:bold;
 
 
 
-/* PANEL INFO */
+/* INFO */
 
 
 .info{
@@ -335,8 +206,7 @@ bottom:20px;
 
 left:20px;
 
-background:
-rgba(0,0,0,0.75);
+background:rgba(0,0,0,.75);
 
 color:white;
 
@@ -344,7 +214,7 @@ padding:15px;
 
 border-radius:10px;
 
-z-index:30;
+z-index:10;
 
 
 }
@@ -371,6 +241,7 @@ grid-template-columns:1fr 1fr;
 }
 
 
+
 }
 
 
@@ -378,7 +249,9 @@ grid-template-columns:1fr 1fr;
 </style>
 
 
+
 </head>
+
 
 
 
@@ -414,11 +287,12 @@ Robot CAD
 
 
 
-<button onclick="entrarAR()">
+<a href="ar.html">
 
-ENTRAR AR
+AR Celular
 
-</button>
+</a>
+
 
 
 </div>
@@ -427,8 +301,7 @@ ENTRAR AR
 
 
 
-
-<div id="carga">
+<div id="latencia">
 
 Cargando...
 
@@ -438,26 +311,32 @@ Cargando...
 
 
 
-
 <div class="info">
 
 
-<div id="estadoXR">
+XR Multiplataforma
 
-Comprobando XR...
+<br>
 
-</div>
-
-
-<div id="fps">
+<span id="fps">
 
 FPS:
 
+</span>
+
+
+<br>
+
+VR compatible con WebXR
+
+<br>
+
+AR mediante cámara móvil
+
+
 </div>
 
 
-
-</div>
 
 
 
@@ -482,6 +361,7 @@ colorManagement:true;
 "
 
 
+
 vr-mode-ui="enabled:true"
 
 
@@ -492,17 +372,14 @@ optionalFeatures:
 
 local-floor,
 
-bounded-floor,
-
-hit-test,
-
-hand-tracking
+bounded-floor
 
 "
 
-
-
 >
+
+
+
 
 
 
@@ -520,14 +397,14 @@ position="0 1.6 6">
 
 
 
-<!-- LUCES -->
+<!-- ILUMINACION -->
 
 
 <a-light
 
 type="ambient"
 
-color="#BBB">
+color="#BBBBBB">
 
 </a-light>
 
@@ -539,9 +416,10 @@ type="directional"
 
 position="1 4 2"
 
-intensity="1.2">
+intensity="1">
 
 </a-light>
+
 
 
 
@@ -568,20 +446,32 @@ color="#D8F3DC">
 
 
 
-<!-- PANEL CENTRAL -->
+
+
+
+<!-- PANEL -->
 
 
 <a-box
 
+
 position="0 2 -4"
+
 
 width="7"
 
+
 height="2.5"
 
-depth="0.2"
 
-color="#1D3557">
+depth="0.25"
+
+
+color="#1D3557"
+
+
+>
+
 
 </a-box>
 
@@ -589,15 +479,27 @@ color="#1D3557">
 
 
 
+
+<!-- TEXTO -->
+
+
 <a-text
+
 
 value="XR MULTIPLATAFORMA"
 
-position="-2.8 2.5 -3.85"
+
+position="-3 2.5 -3.8"
+
 
 width="8"
 
-color="white">
+
+color="white"
+
+
+>
+
 
 </a-text>
 
@@ -606,15 +508,26 @@ color="white">
 
 <a-text
 
+
 value="Laboratorio Realidad Virtual"
 
-position="-2.8 2 -3.85"
+
+position="-3 2 -3.8"
+
 
 width="6"
 
-color="#A8DADC">
+
+color="#A8DADC"
+
+
+>
+
 
 </a-text>
+
+
+
 
 
 
@@ -628,17 +541,16 @@ color="#A8DADC">
 
 position="-4 1 -5"
 
-rotation="0 25 0"
-
-color="#4CC9F0"
-
 width="1"
 
 height="1"
 
-depth="1">
+depth="1"
+
+color="#4CC9F0">
 
 </a-box>
+
 
 
 
@@ -661,7 +573,7 @@ color="#FFD166">
 
 <a-sphere
 
-position="4 1.2 -5"
+position="4 1 -5"
 
 radius="0.9"
 
@@ -675,8 +587,8 @@ color="#EF476F">
 
 
 
-<!-- FONDO TRANSPARENTE AR -->
 
+<!-- FONDO TRANSPARENTE -->
 
 <a-sky
 
@@ -687,7 +599,9 @@ color="transparent">
 
 
 
+
 </a-scene>
+
 
 
 
