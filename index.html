@@ -12,38 +12,17 @@
 <title>Home - XR Multiplataforma</title>
 
 
-<!-- AFRAME -->
-<script src="https://cdn.jsdelivr.net/npm/aframe@1.4.1/dist/aframe-master.min.js"></script>
-
-
 
 <script>
 
 const startTime = performance.now();
 
-
-
-window.addEventListener("load",()=>{
-
-
-const tiempo =
-performance.now()-startTime;
-
-
-document.getElementById("loadBadge").innerHTML =
-
-"Carga inicial: "
-+
-tiempo.toFixed(2)
-+
-" ms";
-
-
-});
-
-
-
 </script>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/aframe@1.4.1/dist/aframe-master.min.js"></script>
 
 
 
@@ -63,8 +42,6 @@ font-family:Arial,sans-serif;
 
 
 
-
-/* MENU */
 
 
 .nav-menu{
@@ -90,11 +67,11 @@ flex-wrap:wrap;
 
 
 
+
 .nav-menu a{
 
 
-background:
-rgba(0,0,0,0.8);
+background:rgba(0,0,0,0.8);
 
 color:white;
 
@@ -111,6 +88,8 @@ font-weight:bold;
 
 
 
+
+
 .nav-menu a:hover{
 
 background:black;
@@ -119,8 +98,6 @@ background:black;
 
 
 
-
-/* LATENCIA */
 
 
 .load-badge{
@@ -148,7 +125,6 @@ font-weight:bold;
 
 
 
-/* INFORMACION */
 
 
 .info-badge{
@@ -163,9 +139,7 @@ left:20px;
 z-index:20;
 
 
-background:
-
-rgba(0,0,0,0.75);
+background:rgba(0,0,0,0.75);
 
 
 color:white;
@@ -176,6 +150,8 @@ border-radius:10px;
 
 
 }
+
+
 
 
 
@@ -199,17 +175,19 @@ grid-template-columns:1fr 1fr;
 
 
 
+
 .nav-menu a{
+
 
 text-align:center;
 
 font-size:12px;
 
-}
-
 
 }
 
+
+}
 
 
 
@@ -218,7 +196,44 @@ font-size:12px;
 
 
 
+
+<script>
+
+
+window.addEventListener("load",()=>{
+
+
+const tiempo = performance.now()-startTime;
+
+
+document.getElementById("loadBadge").innerHTML =
+
+
+"Carga inicial: "
+
++
+
+tiempo.toFixed(2)
+
++
+
+" ms";
+
+
+
+});
+
+
+
+</script>
+
+
+
+
 </head>
+
+
+
 
 
 
@@ -226,34 +241,41 @@ font-size:12px;
 
 
 
-<!-- MENU -->
 
 
 <div class="nav-menu">
 
 
 <a href="index.html">
+
 Home
+
 </a>
+
 
 
 <a href="escena.html">
+
 Escena básica
+
 </a>
+
+
 
 
 <a href="banda.html">
+
 Banda transportadora
+
 </a>
+
+
 
 
 <a href="robot.html">
+
 Robot CAD
-</a>
 
-
-<a href="ar.html">
-AR Celular
 </a>
 
 
@@ -277,7 +299,6 @@ Cargando...
 
 
 
-
 <div class="info-badge">
 
 
@@ -289,12 +310,11 @@ Laboratorio Realidad Virtual
 
 <br>
 
-VR: WebXR
+VR + Mixed Reality
 
 <br>
 
-AR: Cámara móvil
-
+Meta Quest
 
 </div>
 
@@ -308,7 +328,11 @@ AR: Cámara móvil
 <a-scene
 
 
+id="scene"
+
+
 stats
+
 
 
 renderer="
@@ -317,9 +341,12 @@ alpha:true;
 
 antialias:true;
 
-colorManagement:true
+physicallyCorrectLights:true;
+
+colorManagement:true;
 
 "
+
 
 
 
@@ -329,28 +356,17 @@ vr-mode-ui="enabled:true"
 
 webxr="
 
-optionalFeatures:
+referenceSpaceType:local-floor;
 
-local-floor,
-
-bounded-floor,
-
-hit-test
+optionalFeatures:hit-test,dom-overlay;
 
 "
 
 
+
 >
 
-
-
-
-
-
-
-
 <!-- CAMARA -->
-
 
 <a-entity
 
@@ -378,7 +394,9 @@ position="0 1.6 6">
 
 type="ambient"
 
-color="#BBBBBB">
+color="#BBBBBB"
+
+intensity="1.2">
 
 </a-light>
 
@@ -420,10 +438,8 @@ width="24"
 height="24"
 
 
-color="#D8F3DC"
+color="#D8F3DC">
 
-
->
 
 </a-plane>
 
@@ -453,10 +469,8 @@ height="2.6"
 depth="0.25"
 
 
-color="#1D3557"
+color="#1D3557">
 
-
->
 
 </a-box>
 
@@ -467,7 +481,7 @@ color="#1D3557"
 
 
 
-<!-- TEXTOS -->
+<!-- TEXTO PRINCIPAL -->
 
 
 <a-text
@@ -482,12 +496,13 @@ position="-2.85 2.55 -3.86"
 color="white"
 
 
-width="8"
+width="8">
 
-
->
 
 </a-text>
+
+
+
 
 
 
@@ -504,12 +519,13 @@ position="-2.6 1.95 -3.86"
 color="#A8DADC"
 
 
-width="6"
+width="6">
 
-
->
 
 </a-text>
+
+
+
 
 
 
@@ -526,12 +542,11 @@ position="-2.5 1.35 -3.86"
 color="white"
 
 
-width="5"
+width="5">
 
-
->
 
 </a-text>
+
 
 
 
@@ -572,11 +587,12 @@ to:0 360 0;
 
 dur:5000;
 
-loop:true
+loop:true;
 
 "
 
 >
+
 
 </a-box>
 
@@ -609,11 +625,12 @@ to:360 360 0;
 
 dur:6000;
 
-loop:true
+loop:true;
 
 "
 
 >
+
 
 </a-cylinder>
 
@@ -639,17 +656,20 @@ animation="
 
 property:position;
 
+from:4 1.2 -5;
+
 to:4 1.8 -5;
 
 dir:alternate;
 
 dur:2000;
 
-loop:true
+loop:true;
 
 "
 
 >
+
 
 </a-sphere>
 
@@ -660,23 +680,70 @@ loop:true
 
 
 
-<!-- FONDO TRANSPARENTE PARA AR/MR -->
-
-
-<a-sky
-
-color="transparent">
-
-</a-sky>
-
-
-
-
-
-
-
 
 </a-scene>
+
+
+
+
+
+
+
+<script>
+
+
+const scene = document.querySelector("#scene");
+
+
+
+
+// ENTRAR A AR
+
+scene.addEventListener("enter-vr",()=>{
+
+
+if(scene.is("ar-mode")){
+
+
+scene.renderer.setClearColor(
+
+0x000000,
+
+0
+
+);
+
+
+
+}
+
+
+});
+
+
+
+
+
+// SALIR DE AR / VOLVER A VR
+
+scene.addEventListener("exit-vr",()=>{
+
+
+scene.renderer.setClearColor(
+
+0x000000,
+
+1
+
+);
+
+
+
+});
+
+
+
+</script>
 
 
 
