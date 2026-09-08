@@ -1,310 +1,693 @@
 <!DOCTYPE html>
+
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Banda transportadora - XR Multiplataforma</title>
 
-  <script>
-    const startTime = performance.now();
-  </script>
+<meta charset="UTF-8">
 
-  <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.1/dist/aframe-master.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-  body {
-    margin: 0;
-    overflow: hidden;
-    font-family: Arial, sans-serif;
-  }
 
-  .nav-menu {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    z-index: 20;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
+<title>Banda transportadora XR</title>
 
-  .nav-menu a {
-    text-decoration: none;
-    background: rgba(0, 0, 0, 0.78);
-    color: white;
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-  }
 
-  .nav-menu a:hover {
-    background: rgba(0, 0, 0, 0.92);
-  }
+<script src="https://cdn.jsdelivr.net/npm/aframe@1.4.1/dist/aframe-master.min.js"></script>
 
-  .load-badge {
-    position: fixed;
-    top: 68px;
-    right: 16px;
-    z-index: 20;
-    background: rgba(255, 255, 255, 0.88);
-    color: #111;
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 700;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-  }
 
-  .info-badge {
-    position: fixed;
-    bottom: 16px;
-    left: 16px;
-    z-index: 20;
-    background: rgba(0, 0, 0, 0.72);
-    color: white;
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 13px;
-    max-width: 380px;
-    line-height: 1.45;
-  }
 
-  .rs-base {
-    transform: scale(0.55);
-    transform-origin: top left;
-  }
+<script>
 
-  /* -------- AJUSTES PARA CELULAR -------- */
-  @media (max-width: 768px) {
-    .nav-menu {
-      top: 12px;
-      left: 12px;
-      right: 12px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
+const startTime = performance.now();
 
-    .nav-menu a {
-      text-align: center;
-      font-size: 12px;
-      padding: 10px 8px;
-      border-radius: 12px;
-    }
 
-    .load-badge {
-      top: 120px;
-      right: 12px;
-      left: 12px;
-      text-align: center;
-      font-size: 12px;
-      padding: 10px 12px;
-    }
+window.addEventListener("load",()=>{
 
-    .info-badge {
-      left: 12px;
-      right: 12px;
-      bottom: 90px;
-      max-width: none;
-      font-size: 12px;
-      line-height: 1.4;
-      padding: 12px 14px;
-    }
 
-    /* Ocultar stats en celular */
-    .rs-base {
-      display: none !important;
-    }
-  }
+let tiempo = performance.now()-startTime;
+
+
+document.getElementById("loadBadge").innerHTML =
+
+"Carga inicial: " + tiempo.toFixed(2) + " ms";
+
+
+});
+
+
+</script>
+
+
+
+<style>
+
+
+body{
+
+margin:0;
+
+overflow:hidden;
+
+font-family:Arial,sans-serif;
+
+}
+
+
+
+.nav-menu{
+
+
+position:fixed;
+
+top:16px;
+
+right:16px;
+
+z-index:20;
+
+display:flex;
+
+gap:10px;
+
+flex-wrap:wrap;
+
+
+}
+
+
+
+.nav-menu a{
+
+
+background:rgba(0,0,0,0.8);
+
+color:white;
+
+padding:10px 14px;
+
+border-radius:10px;
+
+text-decoration:none;
+
+font-weight:bold;
+
+
+}
+
+
+.nav-menu a:hover{
+
+background:black;
+
+}
+
+
+
+.load-badge{
+
+
+position:fixed;
+
+top:75px;
+
+right:16px;
+
+z-index:20;
+
+background:white;
+
+padding:10px;
+
+border-radius:10px;
+
+font-weight:bold;
+
+
+}
+
+
+
+
+.info-badge{
+
+
+position:fixed;
+
+bottom:20px;
+
+left:20px;
+
+z-index:20;
+
+background:rgba(0,0,0,0.75);
+
+color:white;
+
+padding:15px;
+
+border-radius:10px;
+
+
+}
+
+
+
+@media(max-width:700px){
+
+
+.nav-menu{
+
+
+left:10px;
+
+right:10px;
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+
+}
+
+
+
+.nav-menu a{
+
+font-size:12px;
+
+text-align:center;
+
+}
+
+
+}
+
+
+
 </style>
 
-  <script>
-    window.addEventListener('load', () => {
-      const loadTime = performance.now() - startTime;
-      const badge = document.getElementById('loadBadge');
-      if (badge) {
-        badge.textContent = 'Carga inicial: ' + loadTime.toFixed(2) + ' ms';
-      }
-    });
-  </script>
+
+
 </head>
+
+
+
+
 <body>
-  <div class="nav-menu">
-    <a href="home.html">Home</a>
-    <a href="index.html">Escena básica</a>
-    <a href="banda.html">Banda transportadora</a>
-    <a href="robot.html">Robot CAD</a>
-  </div>
 
-  <div id="loadBadge" class="load-badge">Cargando...</div>
 
-  <div class="info-badge">
-    Sistema industrial simple: banda transportadora con base, rodillos, guías laterales,
-    sensor, indicador, panel de control y animación básica del producto.
-  </div>
 
-  <a-scene stats>
-    <!-- Cámara más cerca -->
-    <a-entity position="0 1.8 3.2">
-      <a-camera></a-camera>
-    </a-entity>
 
-    <!-- Luces -->
-    <a-light type="ambient" color="#D9D9D9" intensity="1"></a-light>
-    <a-light type="directional" color="#FFFFFF" intensity="1.15" position="2 5 3"></a-light>
-    <a-light type="directional" color="#FFFFFF" intensity="0.55" position="-3 3 2"></a-light>
+<div class="nav-menu">
 
-    <!-- Piso -->
-    <a-plane
-      position="0 0 0"
-      rotation="-90 0 0"
-      width="18"
-      height="18"
-      color="#CFE8D3">
-    </a-plane>
 
-    <!-- Pared de fondo -->
-    <a-plane
-      position="0 4.8 -7.5"
-      width="18"
-      height="10"
-      color="#ECECEC">
-    </a-plane>
+<a href="index.html">
+Home
+</a>
 
-    <!-- Título -->
-    <a-text
-      value="Banda transportadora industrial"
-      position="-2.6 3.0 -3.0"
-      color="#222222"
-      width="7"
-      align="left">
-    </a-text>
 
-    <!-- BASE PRINCIPAL -->
-    <a-box
-      position="0 0.78 -2.6"
-      width="7.2"
-      height="0.24"
-      depth="2.4"
-      color="#6B6B6B">
-    </a-box>
+<a href="escena.html">
+Escena básica
+</a>
 
-    <!-- MARCO INFERIOR -->
-    <a-box position="0 0.58 -2.6" width="6.8" height="0.08" depth="2.0" color="#4F4F4F"></a-box>
 
-    <!-- PATAS -->
-    <a-box position="-3.1 0.30 -1.8" width="0.16" height="0.56" depth="0.16" color="#4A4A4A"></a-box>
-    <a-box position="-3.1 0.30 -3.4" width="0.16" height="0.56" depth="0.16" color="#4A4A4A"></a-box>
-    <a-box position="3.1 0.30 -1.8" width="0.16" height="0.56" depth="0.16" color="#4A4A4A"></a-box>
-    <a-box position="3.1 0.30 -3.4" width="0.16" height="0.56" depth="0.16" color="#4A4A4A"></a-box>
+<a href="banda.html">
+Banda transportadora
+</a>
 
-    <!-- SUPERFICIE DE LA BANDA -->
-    <a-box
-      position="0 1.02 -2.6"
-      width="6.2"
-      height="0.12"
-      depth="1.25"
-      color="#214E83">
-    </a-box>
 
-    <!-- GUÍAS LATERALES -->
-    <a-box position="0 1.12 -1.95" width="6.1" height="0.10" depth="0.08" color="#A9A9A9"></a-box>
-    <a-box position="0 1.12 -3.25" width="6.1" height="0.10" depth="0.08" color="#A9A9A9"></a-box>
+<a href="robot.html">
+Robot CAD
+</a>
 
-    <!-- RODILLOS -->
-    <a-cylinder
-      position="-3.0 1.02 -2.6"
-      rotation="90 0 0"
-      radius="0.22"
-      height="1.35"
-      color="#CFCFCF">
-    </a-cylinder>
 
-    <a-cylinder
-      position="3.0 1.02 -2.6"
-      rotation="90 0 0"
-      radius="0.22"
-      height="1.35"
-      color="#CFCFCF">
-    </a-cylinder>
+<a href="ar.html">
+AR Celular
+</a>
 
-    <!-- EJE SENSOR -->
-    <a-cylinder
-      position="-2.15 1.08 -1.72"
-      radius="0.05"
-      height="0.30"
-      color="#7A7A7A">
-    </a-cylinder>
 
-    <!-- SENSOR -->
-    <a-sphere
-      position="-2.15 1.25 -1.72"
-      radius="0.13"
-      color="#00E676"
-      animation__pulse="property: scale; from: 1 1 1; to: 1.25 1.25 1.25; dir: alternate; dur: 900; loop: true">
-    </a-sphere>
+</div>
 
-    <!-- POSTE INDICADOR -->
-    <a-cylinder
-      position="2.15 1.08 -1.72"
-      radius="0.05"
-      height="0.48"
-      color="#666666">
-    </a-cylinder>
 
-    <!-- LUZ INDICADORA -->
-    <a-sphere
-      position="2.15 1.40 -1.72"
-      radius="0.15"
-      color="#FFD60A"
-      animation__blink="property: material.color; from: #FFD60A; to: #FF6B00; dir: alternate; dur: 700; loop: true">
-    </a-sphere>
 
-    <!-- PRODUCTO / CAJA -->
-    <a-box
-      position="-1.8 1.28 -2.6"
-      width="0.72"
-      height="0.55"
-      depth="0.72"
-      color="#E53935"
-      animation="property: position; from: -1.8 1.28 -2.6; to: 1.8 1.28 -2.6; dir: alternate; dur: 3500; loop: true; easing: linear">
-    </a-box>
 
-    <!-- PANEL DE CONTROL -->
-    <a-box
-      position="4.2 1.25 -1.8"
-      width="1.0"
-      height="1.5"
-      depth="0.5"
-      rotation="0 -12 0"
-      color="#2A2D43">
-    </a-box>
 
-    <!-- BOTONES -->
-    <a-sphere position="3.92 1.42 -1.53" radius="0.07" color="#FF3B30"></a-sphere>
-    <a-sphere position="4.16 1.42 -1.53" radius="0.07" color="#FFD60A"></a-sphere>
-    <a-sphere position="4.40 1.42 -1.53" radius="0.07" color="#34C759"></a-sphere>
+<div id="loadBadge" class="load-badge">
 
-    <!-- PANTALLA DEL PANEL -->
-    <a-box
-      position="4.15 1.08 -1.52"
-      width="0.42"
-      height="0.22"
-      depth="0.02"
-      color="#8BE9FD">
-    </a-box>
+Cargando...
 
-    <!-- TEXTO AUXILIAR -->
-    <a-text
-      value="Sistema de transporte"
-      position="-1.7 2.45 -2.2"
-      color="#444444"
-      width="4.4">
-    </a-text>
+</div>
 
-    <!-- CIELO -->
-    <a-sky color="#F3F3F3"></a-sky>
-  </a-scene>
+
+
+
+
+<div class="info-badge">
+
+
+Banda transportadora XR
+
+<br>
+
+Sistema industrial virtual
+
+<br>
+
+VR + Mixed Reality
+
+
+</div>
+
+
+
+
+
+
+<a-scene
+
+
+stats
+
+
+renderer="
+
+alpha:true;
+
+antialias:true;
+
+colorManagement:true
+
+"
+
+
+vr-mode-ui="enabled:true"
+
+
+
+webxr="
+
+optionalFeatures:
+
+local-floor,
+
+bounded-floor,
+
+hit-test
+
+"
+
+
+>
+
+
+
+
+
+
+
+<!-- CAMARA -->
+
+
+<a-entity position="0 1.6 6">
+
+
+<a-camera>
+
+</a-camera>
+
+
+</a-entity>
+
+
+
+
+
+
+
+<!-- ILUMINACION -->
+
+
+<a-light
+
+type="ambient"
+
+color="#BBBBBB">
+
+</a-light>
+
+
+
+
+<a-light
+
+type="directional"
+
+position="1 4 2"
+
+intensity="1.2">
+
+</a-light>
+
+
+
+
+
+
+
+<!-- BASE -->
+
+
+
+<a-box
+
+
+position="0 0.25 -3"
+
+
+width="8"
+
+
+height="0.5"
+
+
+depth="2"
+
+
+color="#444444"
+
+
+>
+
+
+</a-box>
+
+
+
+
+
+
+
+
+<!-- BANDA MOVIL -->
+
+
+<a-box
+
+
+position="0 0.55 -3"
+
+
+width="7"
+
+
+height="0.12"
+
+
+depth="1.5"
+
+
+color="#222222"
+
+
+animation="
+
+property:position;
+
+to:0 0.55 -2.5;
+
+dir:alternate;
+
+dur:3000;
+
+loop:true
+
+"
+
+
+>
+
+</a-box>
+
+
+
+
+
+
+
+
+<!-- RODILLOS -->
+
+
+<a-cylinder
+
+
+position="-3.5 0.65 -3"
+
+
+rotation="0 0 90"
+
+
+radius="0.35"
+
+
+height="1.7"
+
+
+color="#888888"
+
+
+>
+
+</a-cylinder>
+
+
+
+<a-cylinder
+
+
+position="3.5 0.65 -3"
+
+
+rotation="0 0 90"
+
+
+radius="0.35"
+
+
+height="1.7"
+
+
+color="#888888"
+
+
+>
+
+</a-cylinder>
+
+
+
+
+
+
+
+
+<!-- BOTELLAS -->
+
+
+
+<a-cylinder
+
+
+position="-2 1 -3"
+
+
+radius="0.25"
+
+
+height="0.8"
+
+
+color="#4CC3D9"
+
+
+animation="
+
+property:position;
+
+to:2 1 -3;
+
+dur:6000;
+
+loop:true
+
+"
+
+
+>
+
+</a-cylinder>
+
+
+
+
+
+
+
+<a-cylinder
+
+
+position="0 1 -3"
+
+
+radius="0.25"
+
+
+height="0.8"
+
+
+color="#EF476F"
+
+
+animation="
+
+property:position;
+
+to:4 1 -3;
+
+dur:6000;
+
+loop:true
+
+"
+
+
+>
+
+</a-cylinder>
+
+
+
+
+
+
+
+<a-cylinder
+
+
+position="2 1 -3"
+
+
+radius="0.25"
+
+
+height="0.8"
+
+
+color="#FFD166"
+
+
+animation="
+
+property:position;
+
+to:6 1 -3;
+
+dur:6000;
+
+loop:true
+
+"
+
+
+>
+
+</a-cylinder>
+
+
+
+
+
+
+
+
+<!-- TEXTO -->
+
+
+<a-text
+
+
+value="BANDA TRANSPORTADORA XR"
+
+
+position="-2.8 2.5 -3"
+
+
+color="white"
+
+
+width="6"
+
+
+>
+
+</a-text>
+
+
+
+
+
+
+
+<!-- PISO -->
+
+
+<a-plane
+
+
+rotation="-90 0 0"
+
+
+width="15"
+
+
+height="15"
+
+
+color="#D8F3DC"
+
+
+>
+
+</a-plane>
+
+
+
+
+
+
+
+
+<!-- FONDO TRANSPARENTE PARA AR/MR -->
+
+
+<a-sky
+
+color="transparent">
+
+</a-sky>
+
+
+
+
+
+</a-scene>
+
+
+
+
+
+
 </body>
+
+
 </html>
