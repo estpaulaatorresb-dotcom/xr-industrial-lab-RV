@@ -1,612 +1,208 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-<title>XR Multiplataforma</title>
-
-
-
-<!-- AFRAME -->
-
-<script src="https://cdn.jsdelivr.net/npm/aframe@1.4.1/dist/aframe-master.min.js"></script>
-
-
-
-<script>
-
-
-const tiempoInicio = performance.now();
-
-
-
-
-
-window.addEventListener(
-"load",
-()=>{
-
-
-let tiempo =
-performance.now()-tiempoInicio;
-
-
-document.getElementById(
-"latencia"
-).innerHTML =
-
-"Carga inicial: "
-+
-tiempo.toFixed(2)
-+
-" ms";
-
-
-});
-
-
-
-
-
-// FPS
-
-setInterval(()=>{
-
-
-let escena =
-document.querySelector("a-scene");
-
-
-if(escena){
-
-
-document.getElementById(
-"fps"
-).innerHTML =
-"Escena activa";
-
-
-}
-
-
-},1000);
-
-
-
-</script>
-
-
-
-
-
-<style>
-
-
-body{
-
-margin:0;
-
-overflow:hidden;
-
-font-family:Arial;
-
-}
-
-
-
-
-
-/* MENU */
-
-.menu{
-
-
-position:fixed;
-
-top:15px;
-
-right:15px;
-
-z-index:10;
-
-
-display:flex;
-
-gap:10px;
-
-flex-wrap:wrap;
-
-
-}
-
-
-
-.menu a,
-.menu button{
-
-
-background:#222;
-
-color:white;
-
-border:none;
-
-padding:12px 16px;
-
-border-radius:10px;
-
-font-weight:bold;
-
-cursor:pointer;
-
-text-decoration:none;
-
-
-}
-
-
-
-.menu a:hover,
-.menu button:hover{
-
-
-background:#555;
-
-
-}
-
-
-
-
-
-/* LATENCIA */
-
-
-#latencia{
-
-
-position:fixed;
-
-right:20px;
-
-top:80px;
-
-background:white;
-
-padding:12px;
-
-border-radius:10px;
-
-z-index:10;
-
-font-weight:bold;
-
-
-}
-
-
-
-
-
-/* INFO */
-
-
-.info{
-
-
-position:fixed;
-
-bottom:20px;
-
-left:20px;
-
-background:rgba(0,0,0,.75);
-
-color:white;
-
-padding:15px;
-
-border-radius:10px;
-
-z-index:10;
-
-
-}
-
-
-
-
-
-@media(max-width:700px){
-
-
-.menu{
-
-
-left:10px;
-
-right:10px;
-
-display:grid;
-
-grid-template-columns:1fr 1fr;
-
-
-}
-
-
-
-}
-
-
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - XR Multiplataforma</title>
+
+  <script>
+    const startTime = performance.now();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.1/dist/aframe-master.min.js"></script>
+
+  <style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+
+  .nav-menu {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-menu a {
+    text-decoration: none;
+    background: rgba(0, 0, 0, 0.78);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .nav-menu a:hover {
+    background: rgba(0, 0, 0, 0.92);
+  }
+
+  .load-badge {
+    position: fixed;
+    top: 68px;
+    right: 16px;
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.88);
+    color: #111;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  }
+
+  .info-badge {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    z-index: 20;
+    background: rgba(0, 0, 0, 0.72);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    max-width: 380px;
+    line-height: 1.45;
+  }
+
+  .rs-base {
+    transform: scale(0.55);
+    transform-origin: top left;
+  }
+
+  /* -------- AJUSTES PARA CELULAR -------- */
+  @media (max-width: 768px) {
+    .nav-menu {
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .nav-menu a {
+      text-align: center;
+      font-size: 12px;
+      padding: 10px 8px;
+      border-radius: 12px;
+    }
+
+    .load-badge {
+      top: 120px;
+      right: 12px;
+      left: 12px;
+      text-align: center;
+      font-size: 12px;
+      padding: 10px 12px;
+    }
+
+    .info-badge {
+      left: 12px;
+      right: 12px;
+      bottom: 90px;
+      max-width: none;
+      font-size: 12px;
+      line-height: 1.4;
+      padding: 12px 14px;
+    }
+
+    /* Ocultar stats en celular */
+    .rs-base {
+      display: none !important;
+    }
+  }
 </style>
 
-
-
+  <script>
+    window.addEventListener('load', () => {
+      const loadTime = performance.now() - startTime;
+      const badge = document.getElementById('loadBadge');
+      if (badge) {
+        badge.textContent = 'Carga inicial: ' + loadTime.toFixed(2) + ' ms';
+      }
+    });
+  </script>
 </head>
-
-
-
-
-
 <body>
-
-
-
-<!-- MENU -->
-
-
-<div class="menu">
-
-
-<a href="index.html">
-Home
-</a>
-
-
-<a href="escena.html">
-Escena básica
-</a>
-
-
-<a href="banda.html">
-Banda
-</a>
-
-
-<a href="robot.html">
-Robot CAD
-</a>
-
-
-
-<a href="ar.html">
-
-AR Celular
-
-</a>
-
-
-
-</div>
-
-
-
-
-
-<div id="latencia">
-
-Cargando...
-
-</div>
-
-
-
-
-
-<div class="info">
-
-
-XR Multiplataforma
-
-<br>
-
-<span id="fps">
-
-FPS:
-
-</span>
-
-
-<br>
-
-VR compatible con WebXR
-
-<br>
-
-AR mediante cámara móvil
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<a-scene
-
-
-stats
-
-
-renderer="
-
-alpha:true;
-
-antialias:true;
-
-colorManagement:true;
-
-"
-
-
-
-vr-mode-ui="enabled:true"
-
-
-
-webxr="
-
-optionalFeatures:
-
-local-floor,
-
-bounded-floor
-
-"
-
->
-
-
-
-
-
-
-<!-- CAMARA -->
-
-
-<a-camera
-
-position="0 1.6 6">
-
-</a-camera>
-
-
-
-
-
-
-<!-- ILUMINACION -->
-
-
-<a-light
-
-type="ambient"
-
-color="#BBBBBB">
-
-</a-light>
-
-
-
-<a-light
-
-type="directional"
-
-position="1 4 2"
-
-intensity="1">
-
-</a-light>
-
-
-
-
-
-
-
-<!-- PISO -->
-
-
-<a-plane
-
-rotation="-90 0 0"
-
-width="20"
-
-height="20"
-
-color="#D8F3DC">
-
-</a-plane>
-
-
-
-
-
-
-
-
-
-<!-- PANEL -->
-
-
-<a-box
-
-
-position="0 2 -4"
-
-
-width="7"
-
-
-height="2.5"
-
-
-depth="0.25"
-
-
-color="#1D3557"
-
-
->
-
-
-</a-box>
-
-
-
-
-
-
-<!-- TEXTO -->
-
-
-<a-text
-
-
-value="XR MULTIPLATAFORMA"
-
-
-position="-3 2.5 -3.8"
-
-
-width="8"
-
-
-color="white"
-
-
->
-
-
-</a-text>
-
-
-
-
-<a-text
-
-
-value="Laboratorio Realidad Virtual"
-
-
-position="-3 2 -3.8"
-
-
-width="6"
-
-
-color="#A8DADC"
-
-
->
-
-
-</a-text>
-
-
-
-
-
-
-
-
-
-<!-- OBJETOS -->
-
-
-<a-box
-
-position="-4 1 -5"
-
-width="1"
-
-height="1"
-
-depth="1"
-
-color="#4CC9F0">
-
-</a-box>
-
-
-
-
-
-<a-cylinder
-
-position="0 1 -6"
-
-radius="0.6"
-
-height="1.5"
-
-color="#FFD166">
-
-</a-cylinder>
-
-
-
-
-
-<a-sphere
-
-position="4 1 -5"
-
-radius="0.9"
-
-color="#EF476F">
-
-</a-sphere>
-
-
-
-
-
-
-
-
-<!-- FONDO TRANSPARENTE -->
-
-<a-sky
-
-color="transparent">
-
-</a-sky>
-
-
-
-
-
-</a-scene>
-
-
-
-
-
+  <div class="nav-menu">
+    <a href="home.html">Home</a>
+    <a href="index.html">Escena básica</a>
+    <a href="banda.html">Banda transportadora</a>
+    <a href="robot.html">Robot CAD</a>
+  </div>
+
+  <div id="loadBadge" class="load-badge">Cargando...</div>
+
+  <div class="info-badge">
+    Portada del laboratorio XR. Usa el menú para navegar entre las escenas.
+  </div>
+
+  <a-scene stats>
+    <!-- Cámara -->
+    <a-entity position="0 1.6 6">
+      <a-camera></a-camera>
+    </a-entity>
+
+    <!-- Luces -->
+    <a-light type="ambient" color="#BBB"></a-light>
+    <a-light type="directional" color="#FFF" intensity="1.1" position="1 4 2"></a-light>
+
+    <!-- Piso -->
+    <a-plane
+      position="0 0 0"
+      rotation="-90 0 0"
+      width="24"
+      height="24"
+      color="#D8F3DC">
+    </a-plane>
+
+    <!-- Panel central -->
+    <a-box
+      position="0 2 -4"
+      width="7"
+      height="2.6"
+      depth="0.25"
+      color="#1D3557">
+    </a-box>
+
+    <!-- Título -->
+    <a-text
+      value="XR MULTIPLATAFORMA"
+      position="-2.85 2.55 -3.86"
+      color="#FFFFFF"
+      width="8"
+      align="left">
+    </a-text>
+
+    <a-text
+      value="Laboratorio de Realidad Virtual"
+      position="-2.6 1.95 -3.86"
+      color="#A8DADC"
+      width="6"
+      align="left">
+    </a-text>
+
+    <a-text
+      value="Selecciona una escena desde el menu superior"
+      position="-2.55 1.35 -3.86"
+      color="#F1FAEE"
+      width="5.6"
+      align="left">
+    </a-text>
+
+    <!-- Elementos decorativos -->
+    <a-box position="-4 1 -5" rotation="0 25 0" width="1.2" height="1.2" depth="1.2" color="#4CC9F0"></a-box>
+    <a-cylinder position="0 1 -6" radius="0.6" height="1.6" color="#FFD166"></a-cylinder>
+    <a-sphere position="4 1.2 -5" radius="0.9" color="#EF476F"></a-sphere>
+
+    <!-- Fondo -->
+    <a-sky color="#ECECEC"></a-sky>
+  </a-scene>
 </body>
-
-
 </html>
