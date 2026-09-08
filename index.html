@@ -1,123 +1,120 @@
 <!DOCTYPE html>
-
 <html lang="es">
 
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 
 <title>Home - XR Multiplataforma</title>
 
 
-<!-- AFRAME -->
-
+<!-- A-FRAME -->
 <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.1/dist/aframe-master.min.js"></script>
 
 
 <script>
 
-const startTime = performance.now();
+const inicio = performance.now();
 
 
 
-/* ===============================
-        INICIAR AR
-================================ */
+/* ===========================
+   BOTON AR
+=========================== */
 
 
 async function entrarAR(){
 
+    if(!navigator.xr){
 
-if(!navigator.xr){
+        alert("Este navegador no soporta WebXR");
+        return;
 
-alert(
-"Este dispositivo no soporta WebXR"
-);
+    }
 
-return;
+
+    const disponible =
+    await navigator.xr.isSessionSupported(
+        "immersive-ar"
+    );
+
+
+    if(!disponible){
+
+        alert(
+        "AR no disponible en este dispositivo"
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+
+        const session =
+        await navigator.xr.requestSession(
+            "immersive-ar",
+            {
+
+            requiredFeatures:[
+                "local-floor"
+            ],
+
+            optionalFeatures:[
+                "hit-test",
+                "bounded-floor"
+            ]
+
+            }
+        );
+
+
+        console.log(
+        "Sesión AR iniciada",
+        session
+        );
+
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        alert(
+        "Error iniciando AR"
+        );
+
+    }
 
 }
 
 
 
-const disponible =
-await navigator.xr.isSessionSupported(
-"immersive-ar"
-);
 
-
-
-if(!disponible){
-
-alert(
-"AR no disponible en este navegador"
-);
-
-return;
-
-}
-
-
-
-try{
-
-
-await navigator.xr.requestSession(
-"immersive-ar",
-{
-
-requiredFeatures:[
-"local-floor"
-],
-
-optionalFeatures:[
-"hit-test",
-"bounded-floor"
-]
-
-});
-
-
-}
-
-catch(error){
-
-console.log(error);
-
-alert(
-"No se pudo iniciar AR"
-);
-
-}
-
-
-}
-
-
-
-
-
-/* ===============================
-        DISPONIBILIDAD XR
-================================ */
+/* ===========================
+   INFORMACION XR
+=========================== */
 
 
 window.addEventListener(
 "load",
+
 async()=>{
 
 
 let tiempo =
-performance.now()-startTime;
+performance.now()-inicio;
 
 
 
 document.getElementById(
-"loadBadge"
+"carga"
 ).innerHTML =
+
 "Carga inicial: "
 +
 tiempo.toFixed(2)
@@ -135,6 +132,7 @@ await navigator.xr.isSessionSupported(
 );
 
 
+
 let ar =
 await navigator.xr.isSessionSupported(
 "immersive-ar"
@@ -143,7 +141,7 @@ await navigator.xr.isSessionSupported(
 
 
 document.getElementById(
-"xrInfo"
+"estadoXR"
 ).innerHTML =
 
 "VR: "
@@ -157,6 +155,19 @@ document.getElementById(
 (ar?"Disponible":"No disponible");
 
 
+
+}
+
+else{
+
+
+document.getElementById(
+"estadoXR"
+).innerHTML =
+
+"WebXR no disponible";
+
+
 }
 
 
@@ -165,10 +176,10 @@ document.getElementById(
 
 
 
-/* ===============================
-        FPS
-================================ */
 
+/* ===========================
+ FPS
+=========================== */
 
 
 setInterval(()=>{
@@ -187,24 +198,14 @@ escena.renderer
 ){
 
 
-let fps =
-Math.round(
-1/
-escena.frameDuration
-);
-
-
-
 document.getElementById(
 "fps"
 ).innerHTML =
-"FPS: "
-+
-fps;
+
+"FPS activos";
 
 
 }
-
 
 
 },1000);
@@ -212,6 +213,7 @@ fps;
 
 
 </script>
+
 
 
 
@@ -232,7 +234,7 @@ font-family:Arial;
 
 /* MENU */
 
-.nav-menu{
+.menu{
 
 
 position:fixed;
@@ -241,7 +243,7 @@ top:15px;
 
 right:15px;
 
-z-index:20;
+z-index:30;
 
 display:flex;
 
@@ -254,61 +256,63 @@ flex-wrap:wrap;
 
 
 
-.nav-menu a,
-.nav-menu button{
+.menu a,
+.menu button{
 
 
-background:
-rgba(0,0,0,.75);
+background:#222;
 
 color:white;
 
-padding:10px 14px;
-
-border-radius:10px;
-
 border:none;
 
-cursor:pointer;
+padding:12px 16px;
+
+border-radius:10px;
 
 font-weight:bold;
 
 text-decoration:none;
 
+cursor:pointer;
+
+
+}
+
+
+
+.menu button:hover,
+.menu a:hover{
+
+
+background:#444;
+
 
 }
 
 
 
 
-.nav-menu button:hover,
-.nav-menu a:hover{
 
-background:black;
-
-}
+/* CARGA */
 
 
-
-/* PANEL CARGA */
-
-
-.load-badge{
+#carga{
 
 
 position:fixed;
 
-top:70px;
+top:80px;
 
 right:15px;
 
 background:white;
 
-padding:10px;
+padding:12px;
 
 border-radius:10px;
 
-z-index:20;
+z-index:30;
 
 font-weight:bold;
 
@@ -317,7 +321,9 @@ font-weight:bold;
 
 
 
-/* INFORMACION */
+
+
+/* PANEL INFO */
 
 
 .info{
@@ -330,7 +336,7 @@ bottom:20px;
 left:20px;
 
 background:
-rgba(0,0,0,.75);
+rgba(0,0,0,0.75);
 
 color:white;
 
@@ -338,7 +344,7 @@ padding:15px;
 
 border-radius:10px;
 
-z-index:20;
+z-index:30;
 
 
 }
@@ -346,13 +352,12 @@ z-index:20;
 
 
 
-/* CELULAR */
+
+@media(max-width:700px){
 
 
-@media(max-width:768px){
+.menu{
 
-
-.nav-menu{
 
 left:10px;
 
@@ -362,12 +367,11 @@ display:grid;
 
 grid-template-columns:1fr 1fr;
 
-}
-
-
 
 }
 
+
+}
 
 
 
@@ -383,8 +387,10 @@ grid-template-columns:1fr 1fr;
 
 
 
+<!-- MENU -->
 
-<div class="nav-menu">
+
+<div class="menu">
 
 
 <a href="index.html">
@@ -403,7 +409,7 @@ Banda
 
 
 <a href="robot.html">
-Robot
+Robot CAD
 </a>
 
 
@@ -415,14 +421,14 @@ ENTRAR AR
 </button>
 
 
-
 </div>
 
 
 
 
 
-<div id="loadBadge" class="load-badge">
+
+<div id="carga">
 
 Cargando...
 
@@ -431,17 +437,24 @@ Cargando...
 
 
 
-<div id="xrInfo" class="info">
+
+
+<div class="info">
+
+
+<div id="estadoXR">
 
 Comprobando XR...
 
-<br>
+</div>
 
-<span id="fps">
+
+<div id="fps">
 
 FPS:
 
-</span>
+</div>
+
 
 
 </div>
@@ -450,7 +463,12 @@ FPS:
 
 
 
+
+
 <a-scene
+
+
+stats
 
 
 renderer="
@@ -459,7 +477,7 @@ alpha:true;
 
 antialias:true;
 
-colorManagement:true
+colorManagement:true;
 
 "
 
@@ -474,28 +492,29 @@ optionalFeatures:
 
 local-floor,
 
+bounded-floor,
+
 hit-test,
 
-bounded-floor
+hand-tracking
 
 "
 
+
+
 >
+
 
 
 <!-- CAMARA -->
 
 
-<a-entity
+<a-camera
+
 position="0 1.6 6">
-
-
-<a-camera>
 
 </a-camera>
 
-
-</a-entity>
 
 
 
@@ -528,12 +547,11 @@ intensity="1.2">
 
 
 
+
 <!-- PISO -->
 
 
 <a-plane
-
-position="0 0 0"
 
 rotation="-90 0 0"
 
@@ -549,7 +567,8 @@ color="#D8F3DC">
 
 
 
-<!-- PANEL -->
+
+<!-- PANEL CENTRAL -->
 
 
 <a-box
@@ -560,7 +579,7 @@ width="7"
 
 height="2.5"
 
-depth="0.25"
+depth="0.2"
 
 color="#1D3557">
 
@@ -574,7 +593,7 @@ color="#1D3557">
 
 value="XR MULTIPLATAFORMA"
 
-position="-2.8 2.5 -3.8"
+position="-2.8 2.5 -3.85"
 
 width="8"
 
@@ -589,7 +608,7 @@ color="white">
 
 value="Laboratorio Realidad Virtual"
 
-position="-2.6 2 -3.8"
+position="-2.8 2 -3.85"
 
 width="6"
 
@@ -601,7 +620,8 @@ color="#A8DADC">
 
 
 
-<!-- OBJETOS DECORATIVOS -->
+
+<!-- OBJETOS -->
 
 
 <a-box
@@ -610,15 +630,16 @@ position="-4 1 -5"
 
 rotation="0 25 0"
 
+color="#4CC9F0"
+
 width="1"
 
 height="1"
 
-depth="1"
-
-color="#4CC9F0">
+depth="1">
 
 </a-box>
+
 
 
 
@@ -633,6 +654,7 @@ height="1.5"
 color="#FFD166">
 
 </a-cylinder>
+
 
 
 
@@ -652,7 +674,9 @@ color="#EF476F">
 
 
 
-<!-- IMPORTANTE PARA AR -->
+
+<!-- FONDO TRANSPARENTE AR -->
+
 
 <a-sky
 
