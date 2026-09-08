@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
@@ -7,15 +8,12 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>XR Multiplataforma - Home</title>
+
+<title>Home - XR Multiplataforma</title>
 
 
-<script>
 
-const startTime = performance.now();
-
-</script>
-
+<!-- AFRAME WEBXR -->
 
 <script src="https://cdn.jsdelivr.net/npm/aframe@1.6.0/dist/aframe-master.min.js"></script>
 
@@ -36,9 +34,9 @@ font-family:Arial,sans-serif;
 
 
 
+/* MENU */
 
 .nav-menu{
-
 
 position:fixed;
 
@@ -48,182 +46,69 @@ right:16px;
 
 z-index:20;
 
-
 display:flex;
-
-flex-wrap:wrap;
 
 gap:10px;
 
-
 }
 
 
 
-.nav-menu a,
-.nav-menu button{
+.nav-menu a{
 
+background:rgba(0,0,0,0.8);
+
+color:white;
+
+padding:10px 16px;
+
+border-radius:10px;
 
 text-decoration:none;
 
-background:rgba(0,0,0,0.78);
+font-weight:bold;
+
+}
+
+
+
+.nav-menu a:hover{
+
+background:#444;
+
+}
+
+
+
+
+
+/* INFORMACION */
+
+.info-badge{
+
+
+position:fixed;
+
+bottom:20px;
+
+left:20px;
+
+z-index:20;
+
+background:rgba(0,0,0,0.75);
 
 color:white;
 
-
-padding:10px 14px;
+padding:15px;
 
 border-radius:10px;
-
 
 font-size:14px;
 
-font-weight:600;
-
-
-border:none;
-
-cursor:pointer;
-
 
 }
 
 
-
-.nav-menu a:hover,
-.nav-menu button:hover{
-
-
-background:rgba(0,0,0,0.95);
-
-
-}
-
-
-
-
-.load-badge{
-
-
-position:fixed;
-
-top:68px;
-
-right:16px;
-
-
-z-index:20;
-
-
-background:white;
-
-color:#111;
-
-
-padding:10px 14px;
-
-
-border-radius:10px;
-
-
-font-weight:bold;
-
-
-}
-
-
-
-
-
-.info-badge{
-
-
-position:fixed;
-
-bottom:16px;
-
-left:16px;
-
-
-z-index:20;
-
-
-background:rgba(0,0,0,0.72);
-
-
-color:white;
-
-
-padding:10px 14px;
-
-
-border-radius:10px;
-
-
-max-width:380px;
-
-
-font-size:13px;
-
-
-}
-
-
-
-@media(max-width:768px){
-
-
-.nav-menu{
-
-
-left:12px;
-
-right:12px;
-
-top:12px;
-
-
-display:grid;
-
-grid-template-columns:1fr 1fr;
-
-
-}
-
-
-
-.nav-menu a,
-.nav-menu button{
-
-
-font-size:12px;
-
-text-align:center;
-
-
-}
-
-
-
-.info-badge{
-
-
-left:12px;
-
-right:12px;
-
-
-bottom:90px;
-
-
-max-width:none;
-
-
-}
-
-
-
-}
 
 
 
@@ -231,33 +116,9 @@ max-width:none;
 
 
 
-<script>
-
-
-window.addEventListener('load',()=>{
-
-
-let tiempo =
-performance.now()-startTime;
-
-
-document.getElementById("loadBadge").innerHTML =
-
-"Carga inicial: "
-
-+ tiempo.toFixed(2)
-
-+ " ms";
-
-
-});
-
-
-
-</script>
-
-
 </head>
+
+
 
 
 
@@ -265,66 +126,369 @@ document.getElementById("loadBadge").innerHTML =
 
 
 
+
+<!-- MENU -->
+
 <div class="nav-menu">
 
 
 <a href="index.html">
+
 Home
+
 </a>
+
 
 
 <a href="escena.html">
+
 Escena básica
+
 </a>
+
 
 
 <a href="banda.html">
+
 Banda transportadora
+
 </a>
+
 
 
 <a href="robot.html">
+
 Robot CAD
+
 </a>
 
 
-<button id="arButton">
-AR Meta Quest
-</button>
-
-
-
 </div>
 
 
 
-<div id="loadBadge" class="load-badge">
 
-Cargando...
 
-</div>
 
 
 
 <div class="info-badge">
 
-Portada del laboratorio XR.
-Usa el menú para navegar entre las experiencias.
+
+Portada del laboratorio XR<br>
+
+Compatible con PC y Meta Quest<br>
+
+Modo VR + Mixed Reality
+
 
 </div>
 
 
 
+
+
+
+
+
+
 <a-scene
 
-xr-mode="immersive-ar"
 
-webxr="requiredFeatures: local-floor; optionalFeatures: hit-test, dom-overlay;"
+id="scene"
+
+
+renderer="alpha:true;colorManagement:true"
+
 
 vr-mode-ui="enabled:true"
 
-renderer="colorManagement:true"
 
-stats
+webxr="optionalFeatures:local-floor,bounded-floor,hit-test"
+
 
 >
+
+
+<!-- CAMARA CONTROLADA POR QUEST -->
+
+
+<a-entity id="rig">
+
+
+<a-camera
+
+position="0 1.6 0">
+
+</a-camera>
+
+
+</a-entity>
+
+
+
+
+
+
+
+<!-- ILUMINACION -->
+
+
+<a-light
+
+type="ambient"
+
+color="#FFFFFF"
+
+intensity="1">
+
+</a-light>
+
+
+
+<a-light
+
+type="directional"
+
+position="2 4 2"
+
+intensity="1">
+
+</a-light>
+
+
+
+
+
+
+
+<!-- PISO -->
+
+<!-- Visible en VR, transparente para AR -->
+
+<a-plane
+
+
+rotation="-90 0 0"
+
+
+width="20"
+
+
+height="20"
+
+
+color="#D8F3DC">
+
+
+</a-plane>
+
+
+
+
+
+
+
+
+
+<!-- PANEL CENTRAL -->
+
+
+<a-box
+
+
+position="0 2 -4"
+
+
+width="7"
+
+
+height="2.5"
+
+
+depth="0.25"
+
+
+color="#1D3557">
+
+
+</a-box>
+
+
+
+
+
+
+
+
+<a-text
+
+
+value="XR MULTIPLATAFORMA"
+
+
+position="-3 2.5 -3.85"
+
+
+color="white"
+
+
+width="8">
+
+
+</a-text>
+
+
+
+
+
+
+
+<a-text
+
+
+value="Laboratorio de Realidad Virtual"
+
+
+position="-2.7 2 -3.85"
+
+
+color="#A8DADC"
+
+
+width="6">
+
+
+</a-text>
+
+
+
+
+
+
+
+<a-text
+
+
+value="Selecciona una escena"
+
+
+position="-2.4 1.5 -3.85"
+
+
+color="white"
+
+
+width="5">
+
+
+</a-text>
+
+
+
+
+
+
+
+
+
+<!-- OBJETOS DECORATIVOS -->
+
+
+<a-box
+
+
+position="-4 1 -5"
+
+
+rotation="0 25 0"
+
+
+width="1.2"
+
+
+height="1.2"
+
+
+depth="1.2"
+
+
+color="#4CC9F0">
+
+
+</a-box>
+
+
+
+
+
+
+
+<a-cylinder
+
+
+position="0 1 -6"
+
+
+radius="0.6"
+
+
+height="1.5"
+
+
+color="#FFD166">
+
+
+</a-cylinder>
+
+
+
+
+
+
+
+<a-sphere
+
+
+position="4 1.2 -5"
+
+
+radius="0.9"
+
+
+color="#EF476F">
+
+
+</a-sphere>
+
+
+
+
+
+
+
+
+
+<!-- FONDO -->
+
+<!-- IMPORTANTE PARA AR -->
+
+<a-sky
+
+visible="false">
+
+</a-sky>
+
+
+
+
+
+</a-scene>
+
+
+
+
+</body>
+
+
+</html>
