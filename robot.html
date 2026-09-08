@@ -1,516 +1,588 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-<title>Robot CAD XR</title>
-
-
-<script src="https://cdn.jsdelivr.net/npm/aframe@1.4.1/dist/aframe-master.min.js"></script>
-
-
-
-<script>
-
-const startTime = performance.now();
-
-
-window.addEventListener("load",()=>{
-
-
-let tiempo = performance.now()-startTime;
-
-
-document.getElementById("loadBadge").innerHTML =
-
-"Carga inicial: " + tiempo.toFixed(2) + " ms";
-
-
-});
-
-</script>
-
-
-
-<style>
-
-
-body{
-
-margin:0;
-
-overflow:hidden;
-
-font-family:Arial,sans-serif;
-
-}
-
-
-
-.nav-menu{
-
-
-position:fixed;
-
-top:16px;
-
-right:16px;
-
-z-index:20;
-
-display:flex;
-
-gap:10px;
-
-flex-wrap:wrap;
-
-
-}
-
-
-
-.nav-menu a{
-
-
-background:rgba(0,0,0,0.8);
-
-color:white;
-
-padding:10px 14px;
-
-border-radius:10px;
-
-text-decoration:none;
-
-font-weight:bold;
-
-
-}
-
-
-
-.nav-menu a:hover{
-
-background:black;
-
-}
-
-
-
-.load-badge{
-
-
-position:fixed;
-
-top:75px;
-
-right:16px;
-
-z-index:20;
-
-background:white;
-
-padding:10px;
-
-border-radius:10px;
-
-font-weight:bold;
-
-
-}
-
-
-
-
-.info-badge{
-
-
-position:fixed;
-
-bottom:20px;
-
-left:20px;
-
-z-index:20;
-
-background:rgba(0,0,0,0.75);
-
-color:white;
-
-padding:15px;
-
-border-radius:10px;
-
-
-}
-
-
-
-@media(max-width:700px){
-
-
-.nav-menu{
-
-
-left:10px;
-
-right:10px;
-
-display:grid;
-
-grid-template-columns:1fr 1fr;
-
-
-}
-
-
-
-.nav-menu a{
-
-font-size:12px;
-
-text-align:center;
-
-}
-
-
-}
-
-
-</style>
-
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robot CAD XR</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.1/dist/aframe-master.min.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #000;
+    }
+
+    body.en-ar {
+      background: transparent;
+    }
+
+    a-scene {
+      width: 100%;
+      height: 100%;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    #interfaz {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      pointer-events: none;
+      background: transparent;
+    }
+
+    .nav-menu {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      pointer-events: auto;
+    }
+
+    .nav-menu a {
+      background: #222;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .nav-menu a:hover {
+      background: #444;
+    }
+
+    .xr-buttons {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      pointer-events: auto;
+    }
+
+    .xr-buttons button {
+      padding: 15px 25px;
+      border: none;
+      border-radius: 12px;
+      background: #1d3557;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .xr-buttons button:hover {
+      background: #457b9d;
+    }
+
+    .xr-buttons button:disabled {
+      opacity: 0.5;
+      cursor: wait;
+    }
+
+    .info {
+      position: absolute;
+      bottom: 95px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.75);
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      max-width: 350px;
+    }
+
+    #estado {
+      display: block;
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
+    body.en-xr .nav-menu {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .nav-menu {
+        left: 10px;
+        right: 10px;
+        justify-content: center;
+      }
+
+      .nav-menu a {
+        padding: 9px 11px;
+        font-size: 12px;
+      }
+
+      .info {
+        left: 10px;
+        right: 10px;
+        max-width: none;
+        font-size: 13px;
+      }
+
+      .xr-buttons button {
+        padding: 13px 18px;
+      }
+    }
+  </style>
+
+  <script>
+    // Ajuste de visualizacion en AR.
+    // No representa el tamano fisico real del CAD.
+
+    const TAMANO_AR = 0.8;
+    const DISTANCIA_AR = 1.5;
+
+    AFRAME.registerComponent("colocar-robot-ar", {
+      init: function () {
+        this.pendiente = false;
+      },
+
+      restaurar: function () {
+        this.pendiente = false;
+
+        const grupo = this.el.object3D;
+
+        grupo.position.set(0, 0, 0);
+        grupo.rotation.set(0, 0, 0);
+        grupo.scale.set(1, 1, 1);
+
+        this.el.setAttribute("visible", true);
+      },
+
+      colocar: function () {
+        this.pendiente = true;
+        this.el.setAttribute("visible", false);
+      },
+
+      tick: function () {
+        const scene = this.el.sceneEl;
+
+        if (!this.pendiente || !scene.is("ar-mode")) {
+          return;
+        }
+
+        // Esperar un fotograma XR con seguimiento valido.
+        const frame = scene.frame;
+        const espacio = scene.renderer.xr.getReferenceSpace();
+
+        if (!frame || !espacio) {
+          return;
+        }
+
+        const pose = frame.getViewerPose(espacio);
+
+        if (!pose) {
+          return;
+        }
+
+        const robot = this.el.querySelector("#robot");
+
+        if (!robot.getObject3D("mesh")) {
+          return;
+        }
+
+        const THREE = AFRAME.THREE;
+        const grupo = this.el.object3D;
+
+        // Medir el modelo completo, incluyendo offsets del CAD.
+        grupo.position.set(0, 0, 0);
+        grupo.rotation.set(0, 0, 0);
+        grupo.scale.set(1, 1, 1);
+        grupo.updateMatrixWorld(true);
+
+        const caja = new THREE.Box3().setFromObject(grupo);
+        const dimensiones = caja.getSize(new THREE.Vector3());
+
+        const mayor = Math.max(
+          dimensiones.x,
+          dimensiones.y,
+          dimensiones.z
+        );
+
+        if (
+          caja.isEmpty() ||
+          !Number.isFinite(mayor) ||
+          mayor <= 0
+        ) {
+          this.pendiente = false;
+
+          mostrarEstado(
+            "El CAD cargó, pero no tiene dimensiones válidas."
+          );
+
+          return;
+        }
+
+        // Posicion y orientacion reales del visor o celular.
+        const p = pose.transform.position;
+        const q = pose.transform.orientation;
+
+        const orientacion = new THREE.Quaternion(
+          q.x,
+          q.y,
+          q.z,
+          q.w
+        );
+
+        const frente = new THREE.Vector3(0, 0, -1)
+          .applyQuaternion(orientacion);
+
+        const destino = new THREE.Vector3(p.x, p.y, p.z)
+          .addScaledVector(frente, DISTANCIA_AR);
+
+        // Centrar y escalar el contenedor para visualizarlo en AR.
+        const escala = TAMANO_AR / mayor;
+
+        const centro = caja
+          .getCenter(new THREE.Vector3())
+          .multiplyScalar(escala);
+
+        grupo.scale.setScalar(escala);
+
+        grupo.rotation.set(
+          0,
+          Math.atan2(-frente.x, -frente.z),
+          0
+        );
+
+        centro.applyQuaternion(grupo.quaternion);
+
+        grupo.position.copy(destino).sub(centro);
+        grupo.updateMatrixWorld(true);
+
+        this.el.setAttribute("visible", true);
+
+        // Se coloca una sola vez: no sigue a la cabeza.
+        this.pendiente = false;
+
+        mostrarEstado(
+          "AR activo: robot colocado delante de tu vista."
+        );
+      }
+    });
+  </script>
 </head>
 
-
-
-
 <body>
-
-
-
-
-<div class="nav-menu">
-
-
-<a href="index.html">
-Home
-</a>
-
-
-<a href="escena.html">
-Escena básica
-</a>
-
-
-<a href="banda.html">
-Banda transportadora
-</a>
-
-
-<a href="robot.html">
-Robot CAD
-</a>
-
-
-<a href="ar.html">
-AR Celular
-</a>
-
-
-</div>
-
-
-
-
-
-
-<div id="loadBadge" class="load-badge">
-
-Cargando...
-
-</div>
-
-
-
-
-
-
-
-<div class="info-badge">
-
-
-Robot CAD XR
-
-<br>
-
-Modelo 3D industrial
-
-<br>
-
-VR + Mixed Reality
-
-
-</div>
-
-
-
-
-
-
-
-<a-scene
-
-
-stats
-
-
-renderer="
-
-alpha:true;
-
-antialias:true;
-
-colorManagement:true
-
-"
-
-
-vr-mode-ui="enabled:true"
-
-
-
-webxr="
-
-optionalFeatures:
-
-local-floor,
-
-bounded-floor,
-
-hit-test
-
-"
-
-
->
-
-
-
-
-
-
-
-
-<!-- CAMARA -->
-
-
-<a-entity position="0 1.6 5">
-
-
-<a-camera>
-
-</a-camera>
-
-
-</a-entity>
-
-
-
-
-
-
-
-
-<!-- LUCES -->
-
-
-<a-light
-
-type="ambient"
-
-color="#BBBBBB">
-
-</a-light>
-
-
-
-
-<a-light
-
-type="directional"
-
-position="2 4 2"
-
-intensity="1.2">
-
-</a-light>
-
-
-
-
-
-
-
-
-<!-- MODELO ROBOT -->
-
-
-
-<a-entity
-
-
-gltf-model="models/robotassembly.glb"
-
-
-position="0 0 -3"
-
-
-scale="0.8 0.8 0.8"
-
-
-animation="
-
-property:rotation;
-
-to:0 360 0;
-
-dur:10000;
-
-loop:true
-
-"
-
-
->
-
-</a-entity>
-
-
-
-
-
-
-
-
-
-<!-- BASE DEL ROBOT -->
-
-
-<a-cylinder
-
-
-position="0 0 -3"
-
-
-radius="1.5"
-
-
-height="0.2"
-
-
-color="#555555"
-
-
->
-
-</a-cylinder>
-
-
-
-
-
-
-
-
-
-<!-- TEXTO -->
-
-
-<a-text
-
-
-value="ROBOT CAD XR"
-
-
-position="-1.8 2.5 -3"
-
-
-color="white"
-
-
-width="5"
-
-
->
-
-</a-text>
-
-
-
-
-
-
-
-
-<!-- PISO -->
-
-
-<a-plane
-
-
-rotation="-90 0 0"
-
-
-width="15"
-
-
-height="15"
-
-
-color="#D8F3DC"
-
-
->
-
-</a-plane>
-
-
-
-
-
-
-
-
-
-<!-- FONDO TRANSPARENTE AR -->
-
-
-<a-sky
-
-color="transparent">
-
-</a-sky>
-
-
-
-
-
-
-</a-scene>
-
-
-
-
-
-
+  <div id="interfaz">
+
+    <!-- MENU -->
+    <nav class="nav-menu">
+      <a href="index.html">Home</a>
+      <a href="escena.html">Escena básica</a>
+      <a href="banda.html">Banda transportadora</a>
+      <a href="robot.html">Robot CAD</a>
+    </nav>
+
+    <!-- BOTONES -->
+    <div class="xr-buttons">
+      <button
+        id="btnVR"
+        onclick="entrarVR()"
+        disabled>
+        🥽 VR
+      </button>
+
+      <button
+        id="btnAR"
+        onclick="entrarAR()"
+        disabled>
+        📷 AR
+      </button>
+
+      <button
+        id="btnSalir"
+        onclick="salirXR()"
+        hidden>
+        Salir
+      </button>
+    </div>
+
+    <!-- INFORMACION -->
+    <div class="info">
+      <b>Robot CAD Industrial XR</b>
+
+      <span id="estado" role="status">
+        Cargando el robot...
+      </span>
+    </div>
+  </div>
+
+  <!-- ESCENA -->
+  <a-scene
+    id="scene"
+    renderer="alpha: true;
+              antialias: true;
+              physicallyCorrectLights: true;"
+    background="color: #000000"
+    vr-mode-ui="enabled: false"
+    webxr="referenceSpaceType: local-floor;
+           requiredFeatures: local-floor;
+           optionalFeatures: dom-overlay;
+           overlayElement: #interfaz;">
+
+    <!-- CAMARA -->
+    <a-camera
+      position="0 1.6 0"
+      near="0.01"
+      far="1000">
+    </a-camera>
+
+    <!-- ILUMINACION -->
+    <a-light
+      type="ambient"
+      color="#FFFFFF"
+      intensity="3">
+    </a-light>
+
+    <a-light
+      type="directional"
+      color="#FFFFFF"
+      position="2 4 2"
+      intensity="2">
+    </a-light>
+
+    <!-- CONTENEDOR PARA AJUSTAR EL ROBOT EN AR -->
+    <a-entity
+      id="contenedorRobot"
+      colocar-robot-ar>
+
+      <a-entity
+        id="robot"
+        gltf-model="models/robotassembly.glb"
+        position="0 1 -1"
+        rotation="0 180 0"
+        scale="2 2 2">
+      </a-entity>
+
+    </a-entity>
+
+    <!-- TEXTO 3D -->
+    <a-text
+      id="titulo3D"
+      value="ROBOT CAD INDUSTRIAL"
+      position="-2 2.5 -3"
+      color="white"
+      width="5">
+    </a-text>
+  </a-scene>
+
+  <script>
+    const scene = document.querySelector("#scene");
+    const robot = document.querySelector("#robot");
+    const contenedor = document.querySelector("#contenedorRobot");
+    const titulo = document.querySelector("#titulo3D");
+
+    const btnVR = document.querySelector("#btnVR");
+    const btnAR = document.querySelector("#btnAR");
+    const btnSalir = document.querySelector("#btnSalir");
+
+    let modeloListo = Boolean(robot.getObject3D("mesh"));
+    let iniciando = false;
+
+    function mostrarEstado(texto) {
+      document.querySelector("#estado").textContent = texto;
+    }
+
+    function actualizarBotones() {
+      const activo =
+        scene.is("ar-mode") ||
+        scene.is("vr-mode");
+
+      const listo =
+        scene.hasLoaded &&
+        modeloListo &&
+        !iniciando;
+
+      btnVR.disabled = !listo;
+      btnAR.disabled = !listo;
+
+      btnVR.hidden = activo;
+      btnAR.hidden = activo;
+      btnSalir.hidden = !activo;
+
+      document.body.classList.toggle("en-xr", activo);
+    }
+
+    // CARGA DEL MODELO
+    robot.addEventListener("model-loaded", function () {
+      modeloListo = true;
+
+      mostrarEstado("Robot cargado. Pulsa VR o AR.");
+      actualizarBotones();
+    });
+
+    robot.addEventListener("model-error", function (evento) {
+      modeloListo = false;
+
+      console.error("Error al cargar el CAD:", evento.detail);
+
+      mostrarEstado(
+        "No se pudo cargar models/robotassembly.glb. Revisa la ruta."
+      );
+
+      actualizarBotones();
+    });
+
+    scene.addEventListener("loaded", actualizarBotones);
+
+    if (modeloListo) {
+      mostrarEstado("Robot cargado. Pulsa VR o AR.");
+    }
+
+    actualizarBotones();
+
+    // ERRORES
+    function mostrarError(error) {
+      iniciando = false;
+
+      console.error(error);
+
+      mostrarEstado(
+        "No se pudo iniciar XR: " +
+        (error.message || String(error))
+      );
+
+      actualizarBotones();
+    }
+
+    // A-Frame 1.4.1 puede informar rechazos WebXR
+    // mediante este evento global.
+    window.addEventListener(
+      "unhandledrejection",
+      function (evento) {
+        if (iniciando) {
+          mostrarError(
+            evento.reason || "Solicitud XR rechazada."
+          );
+        }
+      }
+    );
+
+    // ENTRADA A VR / AR
+    async function iniciarXR(modo) {
+      if (
+        iniciando ||
+        !scene.hasLoaded ||
+        !modeloListo
+      ) {
+        return;
+      }
+
+      if (
+        scene.is("ar-mode") ||
+        scene.is("vr-mode")
+      ) {
+        return;
+      }
+
+      if (
+        modo === "AR" &&
+        (!window.isSecureContext || !navigator.xr)
+      ) {
+        mostrarEstado(
+          "AR necesita HTTPS y un navegador con WebXR compatible."
+        );
+
+        return;
+      }
+
+      iniciando = true;
+      actualizarBotones();
+
+      mostrarEstado("Iniciando " + modo + "...");
+
+      try {
+        // A-Frame gestiona la sesion, el renderizado,
+        // la camara y los eventos.
+        if (modo === "AR") {
+          await scene.enterAR();
+        } else {
+          await scene.enterVR();
+        }
+      } catch (error) {
+        mostrarError(error);
+      } finally {
+        iniciando = false;
+        actualizarBotones();
+      }
+    }
+
+    function entrarVR() {
+      return iniciarXR("VR");
+    }
+
+    function entrarAR() {
+      return iniciarXR("AR");
+    }
+
+    // SALIR DE XR
+    async function salirXR() {
+      try {
+        // A-Frame utiliza esta salida para VR y AR.
+        await scene.exitVR();
+      } catch (error) {
+        mostrarError(error);
+      }
+    }
+
+    // A-Frame emite enter-vr al entrar en VR o AR.
+    scene.addEventListener("enter-vr", function () {
+      const esAR = scene.is("ar-mode");
+
+      document.body.classList.toggle("en-ar", esAR);
+      titulo.setAttribute("visible", !esAR);
+
+      if (esAR) {
+        // ar-mode hace que A-Frame omita el fondo negro
+        // al dibujar la escena.
+        scene.renderer.setClearColor(0x000000, 0);
+
+        contenedor.components["colocar-robot-ar"].colocar();
+
+        mostrarEstado(
+          "AR activo. Esperando la posición de las gafas o celular..."
+        );
+      } else {
+        scene.renderer.setClearColor(0x000000, 1);
+
+        contenedor.components["colocar-robot-ar"].restaurar();
+
+        mostrarEstado("Modo VR activo.");
+      }
+
+      actualizarBotones();
+    });
+
+    // RESTAURAR LA ESCENA AL SALIR
+    scene.addEventListener("exit-vr", function () {
+      document.body.classList.remove("en-ar");
+
+      scene.renderer.setClearColor(0x000000, 1);
+
+      contenedor.components["colocar-robot-ar"].restaurar();
+
+      titulo.setAttribute("visible", true);
+
+      mostrarEstado("Robot listo. Pulsa VR o AR.");
+      actualizarBotones();
+    });
+  </script>
 </body>
-
-
 </html>
